@@ -19,6 +19,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('order-component', require('./components/OrderComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 /**
@@ -27,6 +28,54 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+let data = {
+    isFrame: 1,
+    isMount: 0,
+    glassTypeIsDisabled: 0,
+    mouldingNumberIsDisabled: 0,
+    matNumbersAreDisabled: 0,
+    secondMatNumberIsVisible: 0,
+    thirdMatNumberIsVisible: 0,
+    orderType: '',
+};
+
 const app = new Vue({
     el: '#app',
+
+    data: data,
+
+    methods: {
+        resetCreateOrder() {
+            this.isFrame = 1;
+            this.isMount = 0;
+            this.secondMatNumberIsVisible = 0;
+            this.thirdMatNumberIsVisible = 0;
+        },
+        orderTypeChange() {
+            this.orderType = document.querySelector('#orderType').value;
+            if ( this.orderType == 'Frame' ) {
+                this.isFrame = 1;
+                this.isMount = 0;
+            } else {
+                this.isMount = 1;
+                this.isFrame = 0;
+            }
+        },
+        showSecondMatNumber() {
+            this.secondMatNumberIsVisible = 1;
+        },
+        hideSecondMatNumber() {
+            this.secondMatNumberIsVisible = 0;
+        },
+        showThirdMatNumber() {
+            this.thirdMatNumberIsVisible = 1;
+        },
+        hideThirdMatNumber() {
+            this.thirdMatNumberIsVisible = 0;
+        },
+        testFunction() {
+            console.log("testing");
+        }
+    },
 });
+

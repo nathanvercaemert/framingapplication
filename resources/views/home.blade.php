@@ -20,18 +20,4 @@
         </div>
     </div>
 </div>
-
-<div id="root">
-    <input type="text" id="input" v-model="message">
-</div>
-
-<script>
-    let data = {
-        message: 'Hello World'
-    };
-    new Vue({
-        el:'#root'
-        data: data
-    })
-</script>
 @endsection

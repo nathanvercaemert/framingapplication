@@ -16,9 +16,23 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('mouldingNumber');
-            $table->string('glassType');
-            $table->string('foamcoreType');
+            $table->string('user');
+            $table->string('orderNumber');
+            $table->string('customerFirst');
+            $table->string('customerLast');
+            $table->string('customerEmail');
+            $table->string('customerPhoneArea');
+            $table->string('customerPhone3');
+            $table->string('customerPhone4');
+            $table->string('orderMouldingNumber');
+            $table->string('orderGlassType');
+            $table->string('orderFoamcoreType');
+            $table->string('orderType');
+            $table->string('orderWidth');
+            $table->string('orderHeight');
+            $table->string('orderFirstMatNumber');
+            $table->string('orderSecondMatNumber');
+            $table->string('orderThirdMatNumber');
         });
     }
 

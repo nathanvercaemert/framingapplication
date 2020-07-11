@@ -37,12 +37,14 @@ Route::get('/mats/list', 'MatModelsController@list');
 Route::get('/glasses/list', 'GlassesController@list');
 Route::get('/foamcores/list', 'FoamcoresController@list');
 
+Route::post('/orders', 'OrdersController@store');
 Route::post('/mouldings', 'MouldingsController@store');
 Route::post('/vendors', 'VendorsController@store');
 Route::post('/mats', 'MatModelsController@store');
 Route::post('/glasses', 'GlassesController@store');
 Route::post('/foamcores', 'FoamcoresController@store');
 
+Route::get('/orders/create', 'OrdersController@create')->name('ordersCreate');
 Route::get('/mouldings/create', 'MouldingsController@create')->name('mouldingsCreate');
 Route::get('/vendors/create', 'VendorsController@create')->name('vendorsCreate');
 Route::get('/mats/create', 'MatModelsController@create')->name('matsCreate');
@@ -66,3 +68,11 @@ Route::delete('/vendors/delete/{id}', 'VendorsController@destroy');
 Route::delete('/mats/delete/{id}', 'MatModelsController@destroy');
 Route::delete('/glasses/delete/{id}', 'GlassesController@destroy');
 Route::delete('/foamcores/delete/{id}', 'FoamcoresController@destroy');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

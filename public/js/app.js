@@ -1945,10 +1945,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['oldsecondmatnumber', 'oldthirdmatnumber'],
+  props: ['oldsecondmatnumber', 'oldthirdmatnumber', 'oldisframe'],
   mounted: function mounted() {
     this.$root.secondMatNumberIsVisible = this.oldsecondmatnumber;
     this.$root.thirdMatNumberIsVisible = this.oldthirdmatnumber;
+    this.$root.isFrame = this.oldisframe;
+  },
+  methods: {
+    removeFirstMat: function removeFirstMat() {
+      document.querySelector('#firstMatNumber').value = null;
+    }
   }
 });
 
@@ -49756,6 +49762,7 @@ var data = {
   matNumbersAreDisabled: 0,
   secondMatNumberIsVisible: 0,
   thirdMatNumberIsVisible: 0,
+  firstMatPresent: 0,
   orderType: ''
 };
 var app = new Vue({
@@ -49790,6 +49797,13 @@ var app = new Vue({
     },
     hideThirdMatNumber: function hideThirdMatNumber() {
       this.thirdMatNumberIsVisible = 0;
+    },
+    removeFirstMat: function removeFirstMat() {
+      this.firstMatPresent = 0;
+      this.$refs.orderComponent.removeFirstMat();
+    },
+    addFirstMat: function addFirstMat() {
+      this.firstMatPresent = 1;
     },
     testFunction: function testFunction() {
       console.log("testing");

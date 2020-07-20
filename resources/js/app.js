@@ -36,6 +36,7 @@ let data = {
     matNumbersAreDisabled: 0,
     secondMatNumberIsVisible: 0,
     thirdMatNumberIsVisible: 0,
+    firstMatPresent: 0,
     orderType: '',
 };
 
@@ -72,6 +73,13 @@ const app = new Vue({
         },
         hideThirdMatNumber() {
             this.thirdMatNumberIsVisible = 0;
+        },
+        removeFirstMat() {
+            this.firstMatPresent = 0;
+            this.$refs.orderComponent.removeFirstMat();
+        },
+        addFirstMat() {
+            this.firstMatPresent = 1;
         },
         testFunction() {
             console.log("testing");

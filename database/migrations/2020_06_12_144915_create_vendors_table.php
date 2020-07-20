@@ -18,7 +18,7 @@ class CreateVendorsTable extends Migration
             $table->timestamps();
             $table->string('vendor');
             $table->text('vendorNotes');
-            $table->text('user');
+            $table->string('user');
         });
     }
 

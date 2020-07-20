@@ -23,6 +23,30 @@ class OrdersController extends Controller
         return view('orders.index');
     }
 
+    public function view($id)
+    {
+        if ( $id == -1 ) {
+            $order = request('orderNumber');
+            try {
+                $order = Order::where('orderNumber', $order)->where('user', auth()->user()->id)->firstOrFail();
+            } catch (ModelNotFoundException $e) {
+                return view('order.oops');
+            }
+        } else {
+            $order = Order::find($id);
+        }
+
+        $order = array('order'=>$order);
+        return view('orders.view')->with($order);
+    }
+
+    public function list()
+    {
+        $orders = Order::userOrders();
+        $orders = array('orders'=>$orders);
+        return view('orders.list')->with($orders);
+    }
+
     public function create()
     {
         $nextOrderNumber = Order::nextOrderNumber();
@@ -32,67 +56,126 @@ class OrdersController extends Controller
         return view('orders.create')->with($data);
     }
 
-    public function store()
+    public function edit($id)
     {
-        $validationArray = [
-            'customerFirst' => ['required'],
-            'customerLast' => ['required'],
-            'customerEmail' => ['required', 'email:rfc'],
-            'customerPhoneArea' => ['required', 'digits:3'],
-            'customerPhone3' => ['required', 'digits:3'],
-            'customerPhone4' => ['required', 'digits:4'],
-            'orderWidth' => ['required', 'numeric'],
-            'orderHeight' => ['required', 'numeric'],
-            'orderFoamcoreType' => ['required'],
-        ];
-        $validationCommentsArray = [
-            'customerPhoneArea.required' => 'An area code is required.',
-            'customerPhoneArea.digits' => 'The area code must be three digits.',
-            'customerPhone3.required' => 'The first three digits of the phone number are required.',
-            'customerPhone3.digits' => 'The first three digits of the phone number must be exactly three digits.',
-            'customerPhone4.required' => 'The last four digits of the phone number are required.',
-            'customerPhone4.digits' => 'The last part of the phone number must be exactly four digits.',
-        ];
-        if (request()->isFrame) {
-            $mouldingNumbers = Moulding::mouldingNumbers();
-            $matNumbers = MatModel::matNumbers();
-            $validationArray += [
-                'orderMouldingNumber' => ['required', 'numeric', Rule::in($mouldingNumbers)],
-                'orderGlassType' => ['required'],
-                'firstMatNumber' => ['numeric', Rule::in($matNumbers)]
-            ];
-            $validationCommentsArray += [
-                'orderMouldingNumber.in' => 'The moulding number must exist.',
-                'firstMatNumber.in' => 'The mat number must exist.',
-                'firstMatNumber.numeric' => 'The mat number must be a number.',
-            ];
-            if (request()->secondMatNumberIsVisible) {
-                $validationArray += [
-                    'firstMatNumber' => ['required', 'numeric', Rule::in($matNumbers)],
-                    'secondMatNumber' => ['required', 'numeric', Rule::in($matNumbers)]
-                ];
-                $validationCommentsArray += [
-                    'firstMatNumber.required' => 'The mat number is required.',
-                    'secondMatNumber.required' => 'The mat number is required.',
-                    'secondMatNumber.in' => 'The mat number must exist.',
-                    'secondMatNumber.numeric' => 'The mat number must be a number.',
-                ];
-                if (request()->thirdMatNumberIsVisible) {
-                    $validationArray += [
-                        'thirdMatNumber' => ['required', 'numeric', Rule::in($matNumbers)],
-                    ];
-                    $validationCommentsArray += [
-                        'thirdMatNumber.required' => 'The mat number is required.',
-                        'thirdMatNumber.in' => 'The mat number must exist.',
-                        'thirdMatNumber.numeric' => 'The mat number must be a number.',
-                    ];
+        if ( $id == -1 ) {
+            $orderNumber = request('orderNumber');
+            try {
+                $order = Order::where('orderNumber', $orderNumber)->where('user', auth()->user()->id)->firstOrFail();
+            } catch (ModelNotFoundException $e) {
+                return view('orders.oops');
+            }
+        } else {
+            $order = Order::find($id);
+        }
+
+        $glasses = Glass::userGlasses();
+        $foamcores = Foamcore::userFoamcores();
+        $data = array('foamcores'=>$foamcores, 'glasses'=>$glasses, 'order'=>$order);
+        return view('orders.edit')->with($data);
+    }
+
+    public function update($id)
+    {
+        $validationArray = Order::validationArray(request()->isReported, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, request()->firstMatPresent);
+        $validationCommentsArray = Order::validationCommentsArray(request()->isReported, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, request()->firstMatPresent);
+        request()->validate($validationArray, $validationCommentsArray);
+
+        $order = Order::find($id);
+
+        $order->customerFirst = request('customerFirst');
+        $order->customerLast = request('customerLast');
+        $order->customerEmail = request('customerEmail');
+        $order->customerPhoneArea = request('customerPhoneArea');
+        $order->customerPhone3 = request('customerPhone3');
+        $order->customerPhone4 = request('customerPhone4');
+        $order->orderNotes = request('orderNotes');
+
+        if (!$order->isReported) {
+            $order->orderFoamcoreType = request('orderFoamcoreType');
+            $order->orderType = request('orderType');
+            $order->orderWidth = request('orderWidth');
+            $order->orderHeight = request('orderHeight');
+            if (request()->isFrame) {
+                if (request('firstMatNumber') != null) {
+                    $order->orderFirstMatNumber = request('firstMatNumber');
+                } else {
+                    $order->orderFirstMatNumber = -1;
                 }
+                $order->orderMouldingNumber = request('orderMouldingNumber');
+                $order->orderGlassType = request('orderGlassType');
+                if (request()->secondMatNumberIsVisible) {
+                    $order->orderSecondMatNumber = request('secondMatNumber');
+                    if (request()->thirdMatNumberIsVisible) {
+                        $order->orderThirdMatNumber = request('thirdMatNumber');
+                    } else {
+                        $order->orderThirdMatNumber = -1;
+                    }
+                } else {
+                    $order->orderSecondMatNumber = -1;
+                    $order->orderThirdMatNumber = -1;
+                }
+            } else {
+                $order->orderFirstMatNumber = -1;
+                $order->orderSecondMatNumber = -1;
+                $order->orderThirdMatNumber = -1;
+                $order->orderMouldingNumber = -1;
+                $order->orderGlassType = -1;
             }
         }
-        request()->validate($validationArray,$validationCommentsArray);
+        $order->save();
+        return redirect('/orders');
+    }
 
+    public function store()
+    {
+        $processFirstMat = request('firstMatNumber') != null;
+        $validationArray = Order::validationArray(0, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, $processFirstMat, request()->firstMatPresent);
+        $validationCommentsArray = Order::validationCommentsArray(0, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, $processFirstMat, request()->firstMatPresent);
+        request()->validate($validationArray, $validationCommentsArray);
 
-        dd(request()->all());
+        $order = new Order();
+        $order->isReported = 0;
+        $order->user = auth()->user()->id;
+        $order->orderNumber = request('orderNumber');
+        $order->customerFirst = request('customerFirst');
+        $order->customerLast = request('customerLast');
+        $order->customerEmail = request('customerEmail');
+        $order->customerPhoneArea = request('customerPhoneArea');
+        $order->customerPhone3 = request('customerPhone3');
+        $order->customerPhone4 = request('customerPhone4');
+        $order->orderNotes = request('orderNotes');
+        $order->orderFoamcoreType = request('orderFoamcoreType');
+        $order->orderType = request('orderType');
+        $order->orderWidth = request('orderWidth');
+        $order->orderHeight = request('orderHeight');
+        if (request()->isFrame) {
+            if (request('firstMatNumber') != null) {
+                $order->orderFirstMatNumber = request('firstMatNumber');
+            } else {
+                $order->orderFirstMatNumber = -1;
+            }
+            $order->orderMouldingNumber = request('orderMouldingNumber');
+            $order->orderGlassType = request('orderGlassType');
+            if (request()->secondMatNumberIsVisible) {
+                $order->orderSecondMatNumber = request('secondMatNumber');
+                if (request()->thirdMatNumberIsVisible) {
+                    $order->orderThirdMatNumber = request('thirdMatNumber');
+                } else {
+                    $order->orderThirdMatNumber = -1;
+                }
+            } else {
+                $order->orderSecondMatNumber = -1;
+                $order->orderThirdMatNumber = -1;
+            }
+        } else {
+            $order->orderFirstMatNumber = -1;
+            $order->orderSecondMatNumber = -1;
+            $order->orderThirdMatNumber = -1;
+            $order->orderMouldingNumber = -1;
+            $order->orderGlassType = -1;
+        }
+        $order->save();
         return view('orders.index');
     }
 

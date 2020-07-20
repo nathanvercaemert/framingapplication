@@ -18,6 +18,7 @@ class CreateOrdersTable extends Migration
             $table->timestamps();
             $table->string('user');
             $table->string('orderNumber');
+            $table->string('isReported');
             $table->string('customerFirst');
             $table->string('customerLast');
             $table->string('customerEmail');
@@ -33,6 +34,7 @@ class CreateOrdersTable extends Migration
             $table->string('orderFirstMatNumber');
             $table->string('orderSecondMatNumber');
             $table->string('orderThirdMatNumber');
+            $table->text('orderNotes');
         });
     }
 

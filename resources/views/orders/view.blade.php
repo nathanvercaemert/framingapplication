@@ -65,7 +65,7 @@
                             <a>{{$order->orderGlassType}}</a>
                         </div>
                     </div>
-                    <div :hidden="isFrame == 0" class="row">
+                    <div :hidden="isFrame == 0 || {{$order->orderFirstMatNumber == -1}}" class="row">
                         <div class="col w-50 text-right">
                             <h5>Mat Number:</h5>
                         </div>

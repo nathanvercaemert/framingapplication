@@ -18,6 +18,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Auth::routes();
 
+Route::get('/reports', 'ReportModelsController@index')->name('reportsIndex');
 Route::get('/orders', 'OrdersController@index')->name('ordersIndex');
 Route::get('/mouldings', 'MouldingsController@index')->name('mouldingsIndex');
 Route::get('/vendors', 'VendorsController@index')->name('vendorsIndex');
@@ -46,6 +47,7 @@ Route::post('/mats', 'MatModelsController@store');
 Route::post('/glasses', 'GlassesController@store');
 Route::post('/foamcores', 'FoamcoresController@store');
 
+Route::get('/reports/create', 'ReportModelsController@create')->name('reportsCreate');
 Route::get('/orders/create', 'OrdersController@create')->name('ordersCreate');
 Route::get('/mouldings/create', 'MouldingsController@create')->name('mouldingsCreate');
 Route::get('/vendors/create', 'VendorsController@create')->name('vendorsCreate');
@@ -67,6 +69,7 @@ Route::patch('/mats/edit/{id}', 'MatModelsController@update');
 Route::patch('/glasses/edit/{id}', 'GlassesController@update');
 Route::patch('/foamcores/edit/{id}', 'FoamcoresController@update');
 
+Route::delete('/orders/delete/{id}', 'OrdersController@destroy');
 Route::delete('/mouldings/delete/{id}', 'MouldingsController@destroy');
 Route::delete('/vendors/delete/{id}', 'VendorsController@destroy');
 Route::delete('/mats/delete/{id}', 'MatModelsController@destroy');

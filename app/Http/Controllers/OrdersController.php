@@ -136,6 +136,7 @@ class OrdersController extends Controller
 
         $order = new Order();
         $order->isReported = 0;
+        $order->reportNumber = -1;
         $order->user = auth()->user()->id;
         $order->orderNumber = request('orderNumber');
         $order->customerFirst = request('customerFirst');
@@ -177,6 +178,12 @@ class OrdersController extends Controller
         }
         $order->save();
         return view('orders.index');
+    }
+
+    public function destroy($id)
+    {
+        Order::find($id)->delete();
+        return redirect('/orders');
     }
 
 }

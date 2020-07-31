@@ -19,6 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('user');
             $table->string('orderNumber');
             $table->string('isReported');
+            $table->string('reportNumber');
             $table->string('customerFirst');
             $table->string('customerLast');
             $table->string('customerEmail');

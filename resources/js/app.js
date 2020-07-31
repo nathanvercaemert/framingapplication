@@ -4,6 +4,8 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+const { includes } = require('lodash');
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -19,6 +21,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('report-component', require('./components/ReportComponent.vue').default);
 Vue.component('order-component', require('./components/OrderComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
@@ -27,6 +30,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+import ReportMixin from './reports.js';
 
 let data = {
     isFrame: 1,
@@ -41,6 +46,8 @@ let data = {
 };
 
 const app = new Vue({
+    mixins: [ReportMixin],
+
     el: '#app',
 
     data: data,
@@ -82,8 +89,7 @@ const app = new Vue({
             this.firstMatPresent = 1;
         },
         testFunction() {
-            console.log("testing");
+            console.log("test");
         }
     },
 });
-

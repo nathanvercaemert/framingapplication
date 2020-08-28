@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col">
             <div class="card">
                 <div class="card-header">Dashboard</div>
 
@@ -20,18 +20,4 @@
         </div>
     </div>
 </div>
-
-<div id="root">
-    <input type="text" id="input" v-model="message">
-</div>
-
-<script>
-    let data = {
-        message: 'Hello World'
-    };
-    new Vue({
-        el:'#root'
-        data: data
-    })
-</script>
 @endsection

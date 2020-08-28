@@ -1932,6 +1932,208 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/OrderComponent.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/OrderComponent.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['oldsecondmatnumber', 'oldthirdmatnumber', 'oldisframe'],
+  mounted: function mounted() {
+    this.$root.secondMatNumberIsVisible = this.oldsecondmatnumber;
+    this.$root.thirdMatNumberIsVisible = this.oldthirdmatnumber;
+    this.$root.isFrame = this.oldisframe;
+  },
+  methods: {
+    removeFirstMat: function removeFirstMat() {
+      document.querySelector('#firstMatNumber').value = null;
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReportComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReportComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['variable0', 'variable1', 'orders'],
+  mounted: function mounted() {
+    // Get the date pickers up and running
+    var date = new Date();
+    var dd = String(date.getDate()).padStart(2, '0');
+    var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+
+    var yyyy = date.getFullYear();
+    var today = mm + '/' + dd + '/' + yyyy;
+    document.querySelector('#endDatepicker').value = today;
+    date.setDate(date.getDate() - 7);
+    dd = String(date.getDate()).padStart(2, '0');
+    mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
+
+    yyyy = date.getFullYear();
+    var oneWeekAgo = mm + '/' + dd + '/' + yyyy;
+    document.querySelector('#beginDatepicker').value = oneWeekAgo; // Create the list of orders attached to the report.
+
+    this.orders.forEach(function (item) {
+      //Redundant and (I think) unused code, but I'm leaving it so I don't break anything.
+      //I think it should just create an empty array.
+      var li = document.createElement('a');
+      li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+      var span = document.createElement('span');
+      span.className += "badge badge-primary badge-pill";
+      span.innerHTML += "View";
+      document.getElementById('orderList').appendChild(li);
+      li.innerHTML += item;
+      li.appendChild(span);
+    });
+  },
+  methods: {
+    submitFunction: function submitFunction() {
+      var orderListSubmit = "";
+      var orderList = document.getElementById('orderList').childNodes;
+      orderList.forEach(function (childNode) {
+        orderListSubmit += childNode.getAttribute('value');
+        orderListSubmit += ",";
+      });
+
+      if (orderListSubmit[orderListSubmit.length - 1] == ',') {
+        orderListSubmit = orderListSubmit.substring(0, orderListSubmit.length - 1);
+      }
+
+      document.getElementById('submitOrderList').value = orderListSubmit;
+      document.getElementById('isDateRange').value = this.$root.isDateRange;
+      document.getElementById('isSpecificOrders').value = this.$root.isSpecificOrders;
+      document.getElementById("reportForm").submit();
+    },
+    removeOrder: function removeOrder() {
+      var list = document.getElementById('orderList').childNodes;
+      var orderNumber = this.$root.reportViewOrderNumber;
+      list.forEach(function (childNode) {
+        if (childNode.getAttribute('value') == orderNumber) {
+          childNode.parentNode.removeChild(childNode);
+        }
+      });
+      this.$root.orderListCount -= 1;
+    },
+    addOrder: function addOrder() {
+      this.$root.orderListCount += 1;
+      var li = document.createElement('a');
+      li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+      li.setAttribute('data-toggle', "modal");
+      li.setAttribute('data-target', "#reportViewOrder");
+      li.setAttribute('value', this.$root.addOrderNumber);
+
+      function some_func(otherFunc, ev) {
+        otherFunc(li.getAttribute('value'));
+      }
+
+      li.addEventListener("click", some_func.bind(null, this.loadReportViewOrder), false);
+      li.setAttribute('value', this.$root.addOrderNumber);
+      var span = document.createElement('span');
+      span.className += "badge badge-primary badge-pill";
+      span.innerHTML += "View/Remove";
+      document.getElementById('orderList').appendChild(li);
+      li.innerHTML += this.$root.addOrderNumber;
+      li.appendChild(span);
+    },
+    updateOrderNumberError: function updateOrderNumberError() {
+      document.getElementById('orderNumberError').innerHTML = this.$root.addOrderNumber;
+      document.getElementById('orderNumber').setAttribute('style', "border-color:red");
+    },
+    resetAddOrderModal: function resetAddOrderModal() {
+      document.getElementById('orderNumber').setAttribute('style', '');
+    },
+    loadReportViewOrder: function loadReportViewOrder(orderNumber) {
+      this.resetViewOrderModal();
+      this.$root.loadReportViewOrder(orderNumber);
+    },
+    loadReportViewOrderCallback: function loadReportViewOrderCallback(response) {
+      var order = response.data;
+      this.$root.reportViewOrderIsFrame = 0;
+
+      if (order.orderType == 'Frame') {
+        this.$root.reportViewOrderIsFrame = 1;
+      }
+
+      this.$root.reportViewOrderFirstMatNumber = 0;
+      this.$root.reportViewOrderSecondMatNumber = 0;
+      this.$root.reportViewOrderThirdMatNumber = 0;
+
+      if (order.orderFirstMatNumber != -1) {
+        this.$root.reportViewOrderFirstMatNumber = 1;
+
+        if (order.orderSecondMatNumber != -1) {
+          this.$root.reportViewOrderSecondMatNumber = 1;
+
+          if (order.orderThirdMatNumber != -1) {
+            this.$root.reportViewOrderThirdMatNumber = 1;
+          }
+        }
+      }
+
+      this.$root.reportViewOrderNumber = order.orderNumber;
+      document.getElementById('reportViewOrderNumber').innerHTML = order.orderNumber;
+      document.getElementById('reportViewOrderFirstName').innerHTML = order.customerFirst;
+      document.getElementById('reportViewOrderLastName').innerHTML = order.customerLast;
+      document.getElementById('reportViewOrderEmail').innerHTML = order.customerEmail;
+      document.getElementById('reportViewOrderPhone1').innerHTML = order.customerPhoneArea;
+      document.getElementById('reportViewOrderPhone2').innerHTML = order.customerPhone3;
+      document.getElementById('reportViewOrderPhone3').innerHTML = order.customerPhone4;
+      document.getElementById('reportViewOrderType').innerHTML = order.orderType;
+      document.getElementById('reportViewOrderMouldingNumber').innerHTML = order.orderMouldingNumber;
+      document.getElementById('reportViewOrderGlassType').innerHTML = order.orderGlassType;
+      document.getElementById('reportViewOrderFirstMatNumber').innerHTML = order.orderFirstMatNumber;
+      document.getElementById('reportViewOrderSecondMatNumber').innerHTML = order.orderSecondMatNumber;
+      document.getElementById('reportViewOrderThirdMatNumber').innerHTML = order.orderThirdMatNumber;
+      document.getElementById('reportViewOrderFoamcoreType').innerHTML = order.orderFoamcoreType;
+      document.getElementById('reportViewOrderWidth').innerHTML = order.orderWidth;
+      document.getElementById('reportViewOrderHeight').innerHTML = order.orderHeight;
+      document.getElementById('reportViewOrderNotes').innerHTML = order.orderNotes;
+    },
+    resetViewOrderModal: function resetViewOrderModal() {
+      this.$root.reportViewOrderIsFrame = null;
+      this.$root.reportViewOrderFirstMatNumber = null;
+      this.$root.reportViewOrderSecondMatNumber = null;
+      this.$root.reportViewOrderThirdMatNumber = null;
+      this.$root.reportViewOrderNumber = null, document.getElementById('reportViewOrderFirstName').innerHTML = '';
+      document.getElementById('reportViewOrderLastName').innerHTML = '';
+      document.getElementById('reportViewOrderEmail').innerHTML = '';
+      document.getElementById('reportViewOrderPhone1').innerHTML = '';
+      document.getElementById('reportViewOrderPhone2').innerHTML = '';
+      document.getElementById('reportViewOrderPhone3').innerHTML = '';
+      document.getElementById('reportViewOrderType').innerHTML = '';
+      document.getElementById('reportViewOrderMouldingNumber').innerHTML = '';
+      document.getElementById('reportViewOrderGlassType').innerHTML = '';
+      document.getElementById('reportViewOrderFirstMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderSecondMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderThirdMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderFoamcoreType').innerHTML = '';
+      document.getElementById('reportViewOrderWidth').innerHTML = '';
+      document.getElementById('reportViewOrderHeight').innerHTML = '';
+      document.getElementById('reportViewOrderNotes').innerHTML = '';
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/bootstrap/dist/js/bootstrap.js":
 /*!*****************************************************!*\
   !*** ./node_modules/bootstrap/dist/js/bootstrap.js ***!
@@ -37507,6 +37709,54 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa&":
+/*!*****************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa& ***!
+  \*****************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4&":
+/*!******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4& ***!
+  \******************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js":
 /*!********************************************************************!*\
   !*** ./node_modules/vue-loader/lib/runtime/componentNormalizer.js ***!
@@ -49673,14 +49923,20 @@ module.exports = function(module) {
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _reports_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./reports.js */ "./resources/js/reports.js");
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
  * building robust, powerful web applications using Vue and Laravel.
  */
+var _require = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js"),
+    includes = _require.includes;
+
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
@@ -49694,6 +49950,8 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('report-component', __webpack_require__(/*! ./components/ReportComponent.vue */ "./resources/js/components/ReportComponent.vue")["default"]);
+Vue.component('order-component', __webpack_require__(/*! ./components/OrderComponent.vue */ "./resources/js/components/OrderComponent.vue")["default"]);
 Vue.component('example-component', __webpack_require__(/*! ./components/ExampleComponent.vue */ "./resources/js/components/ExampleComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -49701,8 +49959,63 @@ Vue.component('example-component', __webpack_require__(/*! ./components/ExampleC
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+
+var data = {
+  isFrame: 1,
+  isMount: 0,
+  glassTypeIsDisabled: 0,
+  mouldingNumberIsDisabled: 0,
+  matNumbersAreDisabled: 0,
+  secondMatNumberIsVisible: 0,
+  thirdMatNumberIsVisible: 0,
+  firstMatPresent: 0,
+  orderType: ''
+};
 var app = new Vue({
-  el: '#app'
+  mixins: [_reports_js__WEBPACK_IMPORTED_MODULE_0__["default"]],
+  el: '#app',
+  data: data,
+  methods: {
+    resetCreateOrder: function resetCreateOrder() {
+      this.isFrame = 1;
+      this.isMount = 0;
+      this.secondMatNumberIsVisible = 0;
+      this.thirdMatNumberIsVisible = 0;
+    },
+    orderTypeChange: function orderTypeChange() {
+      this.orderType = document.querySelector('#orderType').value;
+
+      if (this.orderType == 'Frame') {
+        this.isFrame = 1;
+        this.isMount = 0;
+      } else {
+        this.isMount = 1;
+        this.isFrame = 0;
+      }
+    },
+    showSecondMatNumber: function showSecondMatNumber() {
+      this.secondMatNumberIsVisible = 1;
+    },
+    hideSecondMatNumber: function hideSecondMatNumber() {
+      this.secondMatNumberIsVisible = 0;
+    },
+    showThirdMatNumber: function showThirdMatNumber() {
+      this.thirdMatNumberIsVisible = 1;
+    },
+    hideThirdMatNumber: function hideThirdMatNumber() {
+      this.thirdMatNumberIsVisible = 0;
+    },
+    removeFirstMat: function removeFirstMat() {
+      this.firstMatPresent = 0;
+      this.$refs.orderComponent.removeFirstMat();
+    },
+    addFirstMat: function addFirstMat() {
+      this.firstMatPresent = 1;
+    },
+    testFunction: function testFunction() {
+      console.log("test");
+    }
+  }
 });
 
 /***/ }),
@@ -49818,6 +50131,238 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ExampleComponent_vue_vue_type_template_id_299e239e___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
+
+/***/ }),
+
+/***/ "./resources/js/components/OrderComponent.vue":
+/*!****************************************************!*\
+  !*** ./resources/js/components/OrderComponent.vue ***!
+  \****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./OrderComponent.vue?vue&type=template&id=082b38fa& */ "./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa&");
+/* harmony import */ var _OrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./OrderComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/OrderComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _OrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/OrderComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/OrderComponent.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************!*\
+  !*** ./resources/js/components/OrderComponent.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./OrderComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/OrderComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa& ***!
+  \***********************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./OrderComponent.vue?vue&type=template&id=082b38fa& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/OrderComponent.vue?vue&type=template&id=082b38fa&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_OrderComponent_vue_vue_type_template_id_082b38fa___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/ReportComponent.vue":
+/*!*****************************************************!*\
+  !*** ./resources/js/components/ReportComponent.vue ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ReportComponent.vue?vue&type=template&id=46075be4& */ "./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4&");
+/* harmony import */ var _ReportComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ReportComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ReportComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ReportComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/ReportComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/ReportComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************!*\
+  !*** ./resources/js/components/ReportComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ReportComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReportComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4& ***!
+  \************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./ReportComponent.vue?vue&type=template&id=46075be4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ReportComponent.vue?vue&type=template&id=46075be4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ReportComponent_vue_vue_type_template_id_46075be4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/reports.js":
+/*!*********************************!*\
+  !*** ./resources/js/reports.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: {
+    testVariable: 0,
+    isSpecificOrders: 0,
+    isDateRange: 1,
+    addOrderNumber: null,
+    isInvalid: 0,
+    orderListCount: 0,
+    reportViewOrderIsFrame: null,
+    reportViewOrderFirstMatNumber: null,
+    reportViewOrderSecondMatNumber: null,
+    reportViewOrderThirdMatNumber: null,
+    reportViewOrderNumber: null,
+    reportOrder: null,
+    orderList: null
+  },
+  methods: {
+    resetOrderList: function resetOrderList() {
+      this.orderListEmpty = 1;
+      this.orderList = null;
+    },
+    testFunction3: function testFunction3() {
+      console.log('test');
+    },
+    reportTypeChange: function reportTypeChange() {
+      if (document.querySelector('#reportTypesDateRange').checked) {
+        this.isDateRange = 1;
+        this.isSpecificOrders = 0;
+      } else {
+        this.isSpecificOrders = 1;
+        this.isDateRange = 0;
+      }
+    },
+    resetAddOrderModal: function resetAddOrderModal() {
+      this.isInvalid = 0;
+      this.addOrderNumber = null;
+      this.$refs.reportComponent.resetAddOrderModal();
+    },
+    removeOrder: function removeOrder() {
+      this.$refs.reportComponent.removeOrder();
+    },
+    addOrder: function addOrder() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/reports/add', {
+        params: {
+          orderNumber: this.addOrderNumber
+        }
+      }).then(function (response) {
+        return _this.addOrderCallback(response);
+      });
+    },
+    addOrderCallback: function addOrderCallback(response) {
+      this.addOrderNumber = response.data.orderNumber;
+
+      if (response.data.isValid) {
+        this.$refs.reportComponent.addOrder();
+        $('#addOrder').modal('hide');
+      } else {
+        this.$refs.reportComponent.updateOrderNumberError();
+        this.isInvalid = 1;
+      }
+    },
+    loadReportViewOrder: function loadReportViewOrder(orderNumber) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/reports/load', {
+        params: {
+          orderNumber: orderNumber
+        }
+      }).then(function (response) {
+        return _this2.$refs.reportComponent.loadReportViewOrderCallback(response);
+      });
+    },
+    submitFunction: function submitFunction() {
+      this.$refs.reportComponent.submitFunction();
+    }
+  }
+});
 
 /***/ }),
 

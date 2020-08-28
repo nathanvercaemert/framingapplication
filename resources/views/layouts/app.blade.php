@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,14 +11,44 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="https://unpkg.com/vue@2.6.11/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script type="application/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    <script type="application/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        // JavaScript for disabling form submissions if there are invalid fields
+        (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.getElementsByClassName('needs-validation');
+            // Loop over them and prevent submission
+            var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                event.preventDefault();
+                event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+            });
+        }, false);
+        })();
+    </script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
+
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+
 </head>
+
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
@@ -38,6 +67,9 @@
                     </ul>
 
                     <div class="nav-item">
+                        <a class="nav-link" href="{{ route('reportsIndex') }}">Reports</a>
+                    </div>
+                    <div class="nav-item">
                         <a class="nav-link" href="{{ route('ordersIndex') }}">Orders</a>
                     </div>
                     <div class="nav-item dropdown">
@@ -45,14 +77,12 @@
                             Materials
                         </a>
                         <div class="dropdown-menu" aria-labelledby="navbarMaterialsDropdown">
-                            <a class="dropdown-item" href="{{ route('mouldingsIndex') }}">Mouldings</a>
-                            <a class="dropdown-item" href="{{ route('matsIndex') }}">Mats</a>
-                            <a class="dropdown-item" href="{{ route('glassesIndex') }}">Glasses</a>
                             <a class="dropdown-item" href="{{ route('foamcoresIndex') }}">Foamcores</a>
+                            <a class="dropdown-item" href="{{ route('glassesIndex') }}">Glasses</a>
+                            <a class="dropdown-item" href="{{ route('matsIndex') }}">Mats</a>
+                            <a class="dropdown-item" href="{{ route('mouldingsIndex') }}">Mouldings</a>
+                            <a class="dropdown-item" href="{{ route('vendorsIndex') }}">Vendors</a>
                         </div>
-                    </div>
-                    <div class="nav-item">
-                        <a class="nav-link" href="{{ route('vendorsIndex') }}">Vendors</a>
                     </div>
 
                     <!-- Right Side Of Navbar -->

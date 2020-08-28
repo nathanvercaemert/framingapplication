@@ -17,6 +17,26 @@ class Order extends Model
         return Order::where('user', $user)->get();
     }
 
+    public static function userOrder($orderNumber)
+    {
+        $user = auth()->user()->id;
+        $matchThese = ['user' => $user, 'orderNumber' => $orderNumber];
+        return Order::where('user', $user)->where($matchThese)->get();
+    }
+
+    public static function dateRangeOrders($beginDate, $endDate)
+    {
+        $user = auth()->user()->id;
+        $orders = Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->get();
+        return $orders;
+    }
+
+    public static function specificOrders($orderNumbers)
+    {
+        $user = auth()->user()->id;
+        return Order::where('user', $user)->whereIn('orderNumber', $orderNumbers)->get();
+    }
+
     public static function orderNumbers()
     {
         $user = auth()->user()->id;

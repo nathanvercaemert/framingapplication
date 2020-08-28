@@ -1973,8 +1973,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['variable0', 'variable1'],
+  props: ['variable0', 'variable1', 'orders'],
   mounted: function mounted() {
+    // Get the date pickers up and running
     var date = new Date();
     var dd = String(date.getDate()).padStart(2, '0');
     var mm = String(date.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -1988,11 +1989,145 @@ __webpack_require__.r(__webpack_exports__);
 
     yyyy = date.getFullYear();
     var oneWeekAgo = mm + '/' + dd + '/' + yyyy;
-    document.querySelector('#beginDatepicker').value = oneWeekAgo;
+    document.querySelector('#beginDatepicker').value = oneWeekAgo; // Create the list of orders attached to the report.
+
+    this.orders.forEach(function (item) {
+      //Redundant and (I think) unused code, but I'm leaving it so I don't break anything.
+      //I think it should just create an empty array.
+      var li = document.createElement('a');
+      li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+      var span = document.createElement('span');
+      span.className += "badge badge-primary badge-pill";
+      span.innerHTML += "View";
+      document.getElementById('orderList').appendChild(li);
+      li.innerHTML += item;
+      li.appendChild(span);
+    });
   },
   methods: {
-    testFunction2: function testFunction2() {
-      alert('test');
+    submitFunction: function submitFunction() {
+      var orderListSubmit = "";
+      var orderList = document.getElementById('orderList').childNodes;
+      orderList.forEach(function (childNode) {
+        orderListSubmit += childNode.getAttribute('value');
+        orderListSubmit += ",";
+      });
+
+      if (orderListSubmit[orderListSubmit.length - 1] == ',') {
+        orderListSubmit = orderListSubmit.substring(0, orderListSubmit.length - 1);
+      }
+
+      document.getElementById('submitOrderList').value = orderListSubmit;
+      document.getElementById('isDateRange').value = this.$root.isDateRange;
+      document.getElementById('isSpecificOrders').value = this.$root.isSpecificOrders;
+      document.getElementById("reportForm").submit();
+    },
+    removeOrder: function removeOrder() {
+      var list = document.getElementById('orderList').childNodes;
+      var orderNumber = this.$root.reportViewOrderNumber;
+      list.forEach(function (childNode) {
+        if (childNode.getAttribute('value') == orderNumber) {
+          childNode.parentNode.removeChild(childNode);
+        }
+      });
+      this.$root.orderListCount -= 1;
+    },
+    addOrder: function addOrder() {
+      this.$root.orderListCount += 1;
+      var li = document.createElement('a');
+      li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+      li.setAttribute('data-toggle', "modal");
+      li.setAttribute('data-target', "#reportViewOrder");
+      li.setAttribute('value', this.$root.addOrderNumber);
+
+      function some_func(otherFunc, ev) {
+        otherFunc(li.getAttribute('value'));
+      }
+
+      li.addEventListener("click", some_func.bind(null, this.loadReportViewOrder), false);
+      li.setAttribute('value', this.$root.addOrderNumber);
+      var span = document.createElement('span');
+      span.className += "badge badge-primary badge-pill";
+      span.innerHTML += "View/Remove";
+      document.getElementById('orderList').appendChild(li);
+      li.innerHTML += this.$root.addOrderNumber;
+      li.appendChild(span);
+    },
+    updateOrderNumberError: function updateOrderNumberError() {
+      document.getElementById('orderNumberError').innerHTML = this.$root.addOrderNumber;
+      document.getElementById('orderNumber').setAttribute('style', "border-color:red");
+    },
+    resetAddOrderModal: function resetAddOrderModal() {
+      document.getElementById('orderNumber').setAttribute('style', '');
+    },
+    loadReportViewOrder: function loadReportViewOrder(orderNumber) {
+      this.resetViewOrderModal();
+      this.$root.loadReportViewOrder(orderNumber);
+    },
+    loadReportViewOrderCallback: function loadReportViewOrderCallback(response) {
+      var order = response.data;
+      this.$root.reportViewOrderIsFrame = 0;
+
+      if (order.orderType == 'Frame') {
+        this.$root.reportViewOrderIsFrame = 1;
+      }
+
+      this.$root.reportViewOrderFirstMatNumber = 0;
+      this.$root.reportViewOrderSecondMatNumber = 0;
+      this.$root.reportViewOrderThirdMatNumber = 0;
+
+      if (order.orderFirstMatNumber != -1) {
+        this.$root.reportViewOrderFirstMatNumber = 1;
+
+        if (order.orderSecondMatNumber != -1) {
+          this.$root.reportViewOrderSecondMatNumber = 1;
+
+          if (order.orderThirdMatNumber != -1) {
+            this.$root.reportViewOrderThirdMatNumber = 1;
+          }
+        }
+      }
+
+      this.$root.reportViewOrderNumber = order.orderNumber;
+      document.getElementById('reportViewOrderNumber').innerHTML = order.orderNumber;
+      document.getElementById('reportViewOrderFirstName').innerHTML = order.customerFirst;
+      document.getElementById('reportViewOrderLastName').innerHTML = order.customerLast;
+      document.getElementById('reportViewOrderEmail').innerHTML = order.customerEmail;
+      document.getElementById('reportViewOrderPhone1').innerHTML = order.customerPhoneArea;
+      document.getElementById('reportViewOrderPhone2').innerHTML = order.customerPhone3;
+      document.getElementById('reportViewOrderPhone3').innerHTML = order.customerPhone4;
+      document.getElementById('reportViewOrderType').innerHTML = order.orderType;
+      document.getElementById('reportViewOrderMouldingNumber').innerHTML = order.orderMouldingNumber;
+      document.getElementById('reportViewOrderGlassType').innerHTML = order.orderGlassType;
+      document.getElementById('reportViewOrderFirstMatNumber').innerHTML = order.orderFirstMatNumber;
+      document.getElementById('reportViewOrderSecondMatNumber').innerHTML = order.orderSecondMatNumber;
+      document.getElementById('reportViewOrderThirdMatNumber').innerHTML = order.orderThirdMatNumber;
+      document.getElementById('reportViewOrderFoamcoreType').innerHTML = order.orderFoamcoreType;
+      document.getElementById('reportViewOrderWidth').innerHTML = order.orderWidth;
+      document.getElementById('reportViewOrderHeight').innerHTML = order.orderHeight;
+      document.getElementById('reportViewOrderNotes').innerHTML = order.orderNotes;
+    },
+    resetViewOrderModal: function resetViewOrderModal() {
+      this.$root.reportViewOrderIsFrame = null;
+      this.$root.reportViewOrderFirstMatNumber = null;
+      this.$root.reportViewOrderSecondMatNumber = null;
+      this.$root.reportViewOrderThirdMatNumber = null;
+      this.$root.reportViewOrderNumber = null, document.getElementById('reportViewOrderFirstName').innerHTML = '';
+      document.getElementById('reportViewOrderLastName').innerHTML = '';
+      document.getElementById('reportViewOrderEmail').innerHTML = '';
+      document.getElementById('reportViewOrderPhone1').innerHTML = '';
+      document.getElementById('reportViewOrderPhone2').innerHTML = '';
+      document.getElementById('reportViewOrderPhone3').innerHTML = '';
+      document.getElementById('reportViewOrderType').innerHTML = '';
+      document.getElementById('reportViewOrderMouldingNumber').innerHTML = '';
+      document.getElementById('reportViewOrderGlassType').innerHTML = '';
+      document.getElementById('reportViewOrderFirstMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderSecondMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderThirdMatNumber').innerHTML = '';
+      document.getElementById('reportViewOrderFoamcoreType').innerHTML = '';
+      document.getElementById('reportViewOrderWidth').innerHTML = '';
+      document.getElementById('reportViewOrderHeight').innerHTML = '';
+      document.getElementById('reportViewOrderNotes').innerHTML = '';
     }
   }
 });
@@ -50146,13 +50281,85 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: {
-    testVariable: 0
+    testVariable: 0,
+    isSpecificOrders: 0,
+    isDateRange: 1,
+    addOrderNumber: null,
+    isInvalid: 0,
+    orderListCount: 0,
+    reportViewOrderIsFrame: null,
+    reportViewOrderFirstMatNumber: null,
+    reportViewOrderSecondMatNumber: null,
+    reportViewOrderThirdMatNumber: null,
+    reportViewOrderNumber: null,
+    reportOrder: null,
+    orderList: null
   },
   methods: {
-    hello: function hello() {
-      console.log('hello from mixin!');
+    resetOrderList: function resetOrderList() {
+      this.orderListEmpty = 1;
+      this.orderList = null;
+    },
+    testFunction3: function testFunction3() {
+      console.log('test');
+    },
+    reportTypeChange: function reportTypeChange() {
+      if (document.querySelector('#reportTypesDateRange').checked) {
+        this.isDateRange = 1;
+        this.isSpecificOrders = 0;
+      } else {
+        this.isSpecificOrders = 1;
+        this.isDateRange = 0;
+      }
+    },
+    resetAddOrderModal: function resetAddOrderModal() {
+      this.isInvalid = 0;
+      this.addOrderNumber = null;
+      this.$refs.reportComponent.resetAddOrderModal();
+    },
+    removeOrder: function removeOrder() {
+      this.$refs.reportComponent.removeOrder();
+    },
+    addOrder: function addOrder() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/reports/add', {
+        params: {
+          orderNumber: this.addOrderNumber
+        }
+      }).then(function (response) {
+        return _this.addOrderCallback(response);
+      });
+    },
+    addOrderCallback: function addOrderCallback(response) {
+      this.addOrderNumber = response.data.orderNumber;
+
+      if (response.data.isValid) {
+        this.$refs.reportComponent.addOrder();
+        $('#addOrder').modal('hide');
+      } else {
+        this.$refs.reportComponent.updateOrderNumberError();
+        this.isInvalid = 1;
+      }
+    },
+    loadReportViewOrder: function loadReportViewOrder(orderNumber) {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/reports/load', {
+        params: {
+          orderNumber: orderNumber
+        }
+      }).then(function (response) {
+        return _this2.$refs.reportComponent.loadReportViewOrderCallback(response);
+      });
+    },
+    submitFunction: function submitFunction() {
+      this.$refs.reportComponent.submitFunction();
     }
   }
 });

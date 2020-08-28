@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col">
             <div class="card">
                 <div class="card-header">
                     Order
@@ -65,7 +65,7 @@
                             <a>{{$order->orderGlassType}}</a>
                         </div>
                     </div>
-                    <div :hidden="isFrame == 0 || {{$order->orderFirstMatNumber == -1}}" class="row">
+                    <div :hidden="isFrame == 0 || {{$order->orderFirstMatNumber}} == -1" class="row">
                         <div class="col w-50 text-right">
                             <h5>Mat Number:</h5>
                         </div>

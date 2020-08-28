@@ -40,6 +40,7 @@ Route::get('/mats/list', 'MatModelsController@list');
 Route::get('/glasses/list', 'GlassesController@list');
 Route::get('/foamcores/list', 'FoamcoresController@list');
 
+Route::post('/reports', 'ReportModelsController@store');
 Route::post('/orders', 'OrdersController@store');
 Route::post('/mouldings', 'MouldingsController@store');
 Route::post('/vendors', 'VendorsController@store');
@@ -75,6 +76,9 @@ Route::delete('/vendors/delete/{id}', 'VendorsController@destroy');
 Route::delete('/mats/delete/{id}', 'MatModelsController@destroy');
 Route::delete('/glasses/delete/{id}', 'GlassesController@destroy');
 Route::delete('/foamcores/delete/{id}', 'FoamcoresController@destroy');
+
+Route::get('/reports/add', 'ReportModelsController@addOrder');
+Route::get('/reports/load', 'ReportModelsController@loadOrder');
 
 Auth::routes();
 

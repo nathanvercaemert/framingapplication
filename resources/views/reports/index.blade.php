@@ -3,7 +3,7 @@
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col">
             <div class="card">
                 <div class="card-header">
                     Reports
@@ -14,7 +14,7 @@
                     </p>
                     <p class="btn btn-primary text-white" role="button" data-toggle="modal" data-target="#viewReport" style="width:100%">View Report</p>
                     <p class="btn btn-primary text-white" role="button" data-toggle="modal" data-target="#editReport" style="width:100%">Edit Report</p>
-                    <a href="/reports/create" class="btn btn-primary" role="button" style="width:100%">Create Report</a>
+                    <a href="/reports/create" v-on:click="resetOrderList" class="btn btn-primary" role="button" style="width:100%">Create Report</a>
                 </div>
             </div>
         </div>

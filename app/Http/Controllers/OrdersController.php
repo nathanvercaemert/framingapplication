@@ -30,7 +30,7 @@ class OrdersController extends Controller
             try {
                 $order = Order::where('orderNumber', $order)->where('user', auth()->user()->id)->firstOrFail();
             } catch (ModelNotFoundException $e) {
-                return view('order.oops');
+                return view('orders.oops');
             }
         } else {
             $order = Order::find($id);
@@ -177,7 +177,10 @@ class OrdersController extends Controller
             $order->orderGlassType = -1;
         }
         $order->save();
-        return view('orders.index');
+        $order = Order::where('orderNumber', $order->orderNumber)->where('user', auth()->user()->id)->firstOrFail();
+        $orderId = $order->id;
+        $redirectString = '/orders/view/' . strval($orderId);
+        return redirect($redirectString);
     }
 
     public function destroy($id)

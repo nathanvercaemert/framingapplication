@@ -6,7 +6,14 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Edit Order: {{$order->orderNumber}}
+                    <div class="row">
+                        <div class="col w-50 text-left">
+                            Edit Order: {{$order->orderNumber}}
+                        </div>
+                        <div class="col w-50 text-right">
+                            Report: {{$order->isReported ? $order->reportNumber : "Unreported"}}
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form class="needs-validation" method="POST" action="/orders/edit/{{ $order->id }}" novalidate>
@@ -42,14 +49,14 @@
                         <div class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="customerPhoneArea">Phone</label>
                             <div class="col w-50">
-                                <div class="row">
-                                    <div class="col" style="padding-right:0">
+                                <div class="row" style="margin: auto">
+                                    <div style="width:30%">
                                         <input type="text" class="form-control" name="customerPhoneArea" id="customerPhoneArea" value="{{ old('customerPhoneArea') != null ? old('customerPhoneArea') : $order->customerPhoneArea }}" style="{{ $errors->has('customerPhoneArea') ? 'border-color:red' : '' }}">
                                     </div>
-                                    <div class="col" style="padding:0">
+                                    <div style="width:30%">
                                         <input type="text" class="form-control" name="customerPhone3" id="customerPhone3" value="{{ old('customerPhone3') != null ? old('customerPhone3') : $order->customerPhone3 }}" style="{{ $errors->has('customerPhone3') ? 'border-color:red' : '' }}">
                                     </div>
-                                    <div class="col" style="padding-left:0">
+                                    <div style="width:40%">
                                         <input type="text" class="form-control" name="customerPhone4" id="customerPhone4" value="{{ old('customerPhone4') != null ? old('customerPhone4') : $order->customerPhone4 }}" style="{{ $errors->has('customerPhone4') ? 'border-color:red' : '' }}">
                                     </div>
                                 </div>
@@ -222,6 +229,12 @@
                             </ul>
                         </div>
                     @endif
+                    <p></p>
+                    <div>
+                        <ul :hidden="{{$order->isReported}} == 0" class="list-group">
+                            <li class="list-group-item list-group-item-secondary">Some items cannot be editted because the order has been reported.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

@@ -8,6 +8,9 @@ export default {
         addOrderNumber: null,
         isInvalid: 0,
         orderListCount: 0,
+        isReported: 0,
+        alreadyInOrderList: 0,
+        dateRangeOrderList: null,
 
         reportViewOrderIsFrame: null,
         reportViewOrderFirstMatNumber: null,
@@ -36,30 +39,51 @@ export default {
         },
         resetAddOrderModal: function() {
             this.isInvalid = 0
+            this.isReported = 0
             this.addOrderNumber = null
+            this.alreadyInOrderList = 0
             this.$refs.reportComponent.resetAddOrderModal()
         },
         removeOrder: function() {
             this.$refs.reportComponent.removeOrder()
         },
         addOrder: function() {
-            Axios.get('/reports/add', {
-                params: {
-                    orderNumber: this.addOrderNumber
-                }
-            }).then(response =>
-                this.addOrderCallback(response)
-            )
+            this.alreadyInOrderList = this.checkAlreadyInOrderList()
+            if (this.alreadyInOrderList) {
+                this.$refs.reportComponent.updateOrderNumberError()
+                this.isInvalid = 0
+                this.isReported = 0
+            } else {
+                Axios.get('/reports/add', {
+                    params: {
+                        orderNumber: this.addOrderNumber
+                    }
+                }).then(response =>
+                    this.addOrderCallback(response)
+                )
+            }
         },
         addOrderCallback: function(response) {
             this.addOrderNumber = response.data.orderNumber
-            if (response.data.isValid) {
-                this.$refs.reportComponent.addOrder()
-                $('#addOrder').modal('hide');
-            } else {
+            if (response.data.isReported) {
                 this.$refs.reportComponent.updateOrderNumberError()
-                this.isInvalid = 1
+                this.alreadyInOrderList = 0
+                this.isInvalid = 0
+                this.isReported = 1
+            } else {
+                if (response.data.isValid) {
+                    this.$refs.reportComponent.addOrder()
+                    $('#addOrder').modal('hide');
+                } else {
+                    this.$refs.reportComponent.updateOrderNumberError()
+                    this.alreadyInOrderList = 0
+                    this.isReported = 0
+                    this.isInvalid = 1
+                }
             }
+        },
+        checkAlreadyInOrderList: function() {
+            return this.$refs.reportComponent.checkAlreadyInOrderList()
         },
         loadReportViewOrder: function(orderNumber) {
             Axios.get('/reports/load', {
@@ -70,8 +94,44 @@ export default {
                 this.$refs.reportComponent.loadReportViewOrderCallback(response)
             )
         },
+        verifyReportContainsOrder: function(beginDatepicker, endDatepicker) {
+            Axios.get('/reports/verify', {
+                params: {
+                    beginDatepicker: beginDatepicker,
+                    endDatepicker: endDatepicker,
+                }
+            }).then(response =>
+                this.verifyReportContainsOrderCallback(response)
+            )
+        },
+        verifyReportContainsOrderCallback: function(response) {
+            if (response.data.orderNumbers.length == 0) {
+                this.$refs.reportComponent.verificationSubmit();
+            } else {
+                this.$refs.reportComponent.verificationList(response.data.orderNumbers);
+            }
+        },
+        verificationSubmit: function() {
+            this.$refs.reportComponent.verificationSubmit();
+        },
         submitFunction: function() {
             this.$refs.reportComponent.submitFunction()
+        },
+        populateDateRangeOrders: function() {
+            this.$refs.reportComponent.populateDateRangeOrders()
+        },
+        getDateRangeOrders: function(beginDate, endDate) {
+            Axios.get('/reports/daterangeorders', {
+                params: {
+                    beginDate: beginDate,
+                    endDate: endDate,
+                }
+            }).then(response =>
+                this.getDateRangeOrdersCallback(response)
+            )
+        },
+        getDateRangeOrdersCallback: function(response) {
+            this.$refs.reportComponent.getDateRangeOrdersCallback(response)
         }
     }
 }

@@ -41,14 +41,14 @@
                         <div class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="customerPhoneArea">Phone</label>
                             <div class="col w-50">
-                                <div class="row">
-                                    <div class="col" style="padding-right:0">
+                                <div class="row" style="margin: auto">
+                                    <div style="width:30%">
                                         <input type="text" class="form-control" name="customerPhoneArea" id="customerPhoneArea" placeholder="123" value="{{old('customerPhoneArea')}}" style="{{ $errors->has('customerPhoneArea') ? 'border-color:red' : '' }}">
                                     </div>
-                                    <div class="col" style="padding:0">
+                                    <div style="width:30%">
                                         <input type="text" class="form-control" name="customerPhone3" id="customerPhone3" placeholder="456" value="{{old('customerPhone3')}}" style="{{ $errors->has('customerPhone3') ? 'border-color:red' : '' }}">
                                     </div>
-                                    <div class="col" style="padding-left:0">
+                                    <div style="width:40%">
                                         <input type="text" class="form-control" name="customerPhone4" id="customerPhone4" placeholder="7890" value="{{old('customerPhone4')}}" style="{{ $errors->has('customerPhone4') ? 'border-color:red' : '' }}">
                                     </div>
                                 </div>

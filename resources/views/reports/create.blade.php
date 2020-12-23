@@ -50,6 +50,12 @@
                                 </div>
                             </div>
                         </div>
+                        <div :hidden="isDateRange == 0" class="form-row text-right mb-2">
+                            <label class="col w-50 col-form-label" for="buttonToPopulateDateRangeOrders">To Be Reported:</label>
+                            <div class="col w-50 text-left">
+                                <button type="button" class="btn btn-primary" name="buttonToPopulateDateRangeOrders" id="buttonToPopulateDateRangeOrders" v-on:click="populateDateRangeOrders" data-toggle="modal" data-target="#dateRangeOrdersModal" style="width:100%">View Orders in Date Range</button>
+                            </div>
+                        </div>
                         <div :hidden="isSpecificOrders == 0" class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="test">Orders:</label>
                             <div class="col w-50 text-left">
@@ -60,10 +66,17 @@
                                 <button :hidden="isSpecificOrders == 0" type="button" class="btn btn-primary" v-on:click="resetAddOrderModal" data-toggle="modal" data-target="#addOrder" style="width:100%">Add Order</button>
                             </div>
                         </div>
+                        <div class="form-row text-right mb-2">
+                            <label class="col w-50 col-form-label" for="reportNotes">Notes:</label>
+                            <div class="col w-50">
+                                <textarea type="text" class="form-control" name="reportNotes" id="reportNotes" placeholder="Notes">{{old('reportNotes')}}</textarea>
+                            </div>
+                        </div>
                         <input hidden type="text" name="submitOrderList" id="submitOrderList">
                         <input hidden type="text" name="isDateRange" id="isDateRange">
                         <input hidden type="text" name="isSpecificOrders" id="isSpecificOrders">
-                        <input hidden type ="text" :value="{{$nextReportNumber}}" name="reportNumber" id="reportNumber">
+                        <input hidden type="text" :value="{{$nextReportNumber}}" name="reportNumber" id="reportNumber">
+                        <input hidden type="text" value=-1 name="dateRangeOrders" id="dateRangeOrders">
                         <button type="button" id="submitButton" v-on:click="submitFunction" class="btn btn-primary" style="width:100%">Submit New Report</button>
                     </form>
                     @if ($errors->any())
@@ -90,5 +103,7 @@
 
 @include('modals.reports.addOrder')
 @include('modals.reports.viewOrder')
+@include('modals.reports.reportContainsOrdersVerification');
+@include('modals.reports.dateRangeOrders')
 
 @endsection

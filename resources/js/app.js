@@ -21,6 +21,8 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
+Vue.component('edit-report-component', require('./components/EditReportComponent.vue').default);
+Vue.component('report-view-component', require('./components/ReportViewComponent.vue').default);
 Vue.component('report-component', require('./components/ReportComponent.vue').default);
 Vue.component('order-component', require('./components/OrderComponent.vue').default);
 Vue.component('example-component', require('./components/ExampleComponent.vue').default);
@@ -32,6 +34,8 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  */
 
 import ReportMixin from './reports.js';
+import ReportViewMixin from './reportView.js';
+import ReportEditMixin from './reportEdit.js';
 
 let data = {
     isFrame: 1,
@@ -46,7 +50,7 @@ let data = {
 };
 
 const app = new Vue({
-    mixins: [ReportMixin],
+    mixins: [ReportMixin, ReportViewMixin, ReportEditMixin],
 
     el: '#app',
 

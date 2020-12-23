@@ -15,7 +15,19 @@
                         <div :hidden="isInvalid == 0">
                             <p></p>
                             <ul class="list-group">
-                                <li class="list-group-item list-group-item-danger">Order number <span id="orderNumberError"></span> does not exist.</li>
+                                <li class="list-group-item list-group-item-danger">Order number <span id="orderNumberReportedError"></span> does not exist.</li>
+                            </ul>
+                        </div>
+                        <div :hidden="isReported == 0">
+                            <p></p>
+                            <ul class="list-group">
+                                <li class="list-group-item list-group-item-danger">Order number <span id="orderNumberError"></span> has already been reported.</li>
+                            </ul>
+                        </div>
+                        <div :hidden="alreadyInOrderList == 0">
+                            <p></p>
+                            <ul class="list-group">
+                                <li class="list-group-item list-group-item-danger">Order number <span id="orderNumberAlreadyError"></span> is already in the order list.</li>
                             </ul>
                         </div>
                     </div>

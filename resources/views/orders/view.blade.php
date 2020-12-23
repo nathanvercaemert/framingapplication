@@ -6,7 +6,14 @@
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Order
+                    <div class="row">
+                        <div class="col w-50 text-left">
+                            Order: {{$order->orderNumber}}
+                        </div>
+                        <div class="col w-50 text-right">
+                            Report: {{$order->isReported ? $order->reportNumber : "Unreported"}}
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">

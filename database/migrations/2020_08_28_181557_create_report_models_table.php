@@ -16,10 +16,15 @@ class CreateReportModelsTable extends Migration
         Schema::create('report_models', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->timestamp('processed_at')->nullable();
+            $table->string('isProcessed');
+            $table->timestamp('beginDate')->nullable();
+            $table->timestamp('endDate')->nullable();
             $table->string('reportNumber');
             $table->string('reportOrderList');
             $table->string('reportIsDateRange');
             $table->string('reportIsSpecificOrders');
+            $table->text('reportNotes');
             $table->string('user');
         });
     }

@@ -14,7 +14,13 @@
                     <p>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" style="width:100%">Close</button>
                     </p>
-                    <button type="submit" class="btn btn-primary" style="width:100%">Confirm Delete</button>
+                    <button :disabled="{{$order->isReported}} == 1" type="submit" class="btn btn-primary" style="width:100%">Confirm Delete</button>
+                    <p></p>
+                    <div>
+                        <ul :hidden="{{$order->isReported}} == 0" class="list-group">
+                            <li class="list-group-item list-group-item-secondary">Order cannot be deleted because it has been reported.</li>
+                        </ul>
+                    </div>
                 </div>
             </form>
     </div>

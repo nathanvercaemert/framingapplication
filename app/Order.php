@@ -17,6 +17,12 @@ class Order extends Model
         return Order::where('user', $user)->get();
     }
 
+    public static function userReportedOrders()
+    {
+        $user = auth()->user()->id;
+        return Order::where('user', $user)->where('isReported', 1)->get();
+    }
+
     public static function userOrder($orderNumber)
     {
         $user = auth()->user()->id;
@@ -27,8 +33,19 @@ class Order extends Model
     public static function dateRangeOrders($beginDate, $endDate)
     {
         $user = auth()->user()->id;
-        $orders = Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->get();
-        return $orders;
+        return Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->where('isReported', 0)->get();
+    }
+
+    public static function dateRangeOrdersInReport($reportNumber, $beginDate, $endDate)
+    {
+        $user = auth()->user()->id;
+        return Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->where('isReported', 0)->orWhere('reportNumber', $reportNumber)->whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->get();
+    }
+
+    public static function dateRangeOrdersVerification($reportNumber,$beginDate, $endDate)
+    {
+        $user = auth()->user()->id;
+        return Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->where('isReported', 1)->where('reportNumber', '!=', $reportNumber)->get();
     }
 
     public static function specificOrders($orderNumbers)
@@ -53,7 +70,7 @@ class Order extends Model
         $user = auth()->user()->id;
         $maxOrder = \DB::select(
             \DB::raw("
-                SELECT MAX(orderNumber) orderNumber
+                SELECT MAX(CAST(orderNumber AS SIGNED)) orderNumber
                 FROM orders
                 WHERE user = :user;
             "),
@@ -61,6 +78,41 @@ class Order extends Model
         );
         $maxOrder = $maxOrder[0]->orderNumber;
         return $maxOrder + 1;
+    }
+
+    public static function idsToOrderNumbers($editOrders) {
+        if ($editOrders == "") {
+            return [];
+        }
+        $editOrders = \DB::select("SELECT orderNumber FROM orders WHERE id IN($editOrders)");
+        foreach ($editOrders as $index => $value){
+            $editOrders[$index] = $value->orderNumber;
+        }
+        return $editOrders;
+    }
+
+    public static function orderNumbersToIds($orders) {
+        if ($orders == "") {
+            return [];
+        }
+        $user = auth()->user()->id;
+        $orders = \DB::select("SELECT id FROM orders WHERE orderNumber IN($orders) AND user = $user");
+        foreach ($orders as $index => $value){
+            $orders[$index] = $value->id;
+        }
+        return $orders;
+    }
+
+    public static function reportOrders($orders, $reportNumber) {
+        $orderIDs = explode(',', $orders);
+        \DB::table('orders')->whereIn('id', $orderIDs)->update(array('reportNumber' => $reportNumber));
+        \DB::table('orders')->whereIn('id', $orderIDs)->update(array('isReported' => 1));
+    }
+
+    public static function unreportOrders($orders) {
+        $orderIDs = explode(',', $orders);
+        \DB::table('orders')->whereIn('id', $orderIDs)->update(array('reportNumber' => -1));
+        \DB::table('orders')->whereIn('id', $orderIDs)->update(array('isReported' => 0));
     }
 
     public static function validationArray($isReported, $isFrame, $secondMatNumberIsVisible, $thirdMatNumberIsVisible, $firstMatPresent)

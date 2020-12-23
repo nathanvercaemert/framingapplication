@@ -3,7 +3,7 @@
 
 <script>
     export default {
-        props: ['variable0', 'variable1', 'orders'],
+        props: ['variable0', 'variable1', 'orders', 'reportorders'],
         mounted() {
             // Get the date pickers up and running
             var date = new Date();
@@ -51,6 +51,24 @@
                 document.getElementById('submitOrderList').value = orderListSubmit;
                 document.getElementById('isDateRange').value = this.$root.isDateRange;
                 document.getElementById('isSpecificOrders').value = this.$root.isSpecificOrders;
+                if (this.$root.isDateRange) {
+                    this.$root.verifyReportContainsOrder(document.getElementById('beginDatepicker').value, document.getElementById('endDatepicker').value);
+                } else {
+                    document.getElementById("reportForm").submit();
+                }
+            },
+            verificationList: function verificationList(orderNumbers) {
+                $('#reportContainsOrders').modal('show');
+                orderNumbers.forEach(function (item) {
+                    let li = document.createElement('a');
+                    li.setAttribute('style', 'text-align:center;');
+                    li.className += "list-group-item d-flex align-items-center";
+                    li.setAttribute('value', item);
+                    document.getElementById('orderNumberVerificationList').appendChild(li);
+                    li.innerHTML += "Order number " + item + " has already been reported.";
+                });
+            },
+            verificationSubmit: function verificationSubmit() {
                 document.getElementById("reportForm").submit();
             },
             removeOrder: function removeOrder() {
@@ -82,8 +100,21 @@
                 li.innerHTML += this.$root.addOrderNumber;
                 li.appendChild(span);
             },
+            checkAlreadyInOrderList: function checkAlreadyInOrderList() {
+                let orderNumber = this.$root.addOrderNumber;
+                let orderListToCheck = document.getElementById('orderList').childNodes;
+                let returnValue = 0
+                orderListToCheck.forEach(function(originalOrderNumber) {
+                    if (originalOrderNumber.getAttribute('value') == orderNumber) {
+                        returnValue = 1;
+                    }
+                });
+                return returnValue;
+            },
             updateOrderNumberError: function updateOrderNumberError() {
+                document.getElementById('orderNumberReportedError').innerHTML = this.$root.addOrderNumber;
                 document.getElementById('orderNumberError').innerHTML = this.$root.addOrderNumber;
+                document.getElementById('orderNumberAlreadyError').innerHTML = this.$root.addOrderNumber;
                 document.getElementById('orderNumber').setAttribute('style', "border-color:red");
             },
             resetAddOrderModal: function resetAddOrderModal() {
@@ -153,6 +184,25 @@
                 document.getElementById('reportViewOrderHeight').innerHTML = '';
                 document.getElementById('reportViewOrderNotes').innerHTML = '';
             },
+            populateDateRangeOrders: function populateDateRangeOrders() {
+                var orderListNode = document.getElementById('dateRangeOrdersList');
+                while (orderListNode.firstChild) {
+                    orderListNode.removeChild(orderListNode.lastChild);
+                }
+                this.$root.getDateRangeOrders(document.querySelector('#beginDatepicker').value, document.querySelector('#endDatepicker').value);
+            },
+            getDateRangeOrdersCallback: function getDateRangeOrdersCallback(response) {
+                var orderListNode = document.getElementById('dateRangeOrdersList');
+                let orders = response.data.orders;
+                orders.forEach(function (order) {
+                    let li = document.createElement('a');
+                    li.setAttribute('style', 'text-align:center;');
+                    li.className += "list-group-item d-flex align-items-center";
+                    li.setAttribute('value', order);
+                    orderListNode.appendChild(li);
+                    li.innerHTML += order;
+                });
+            }
         }
     }
 </script>

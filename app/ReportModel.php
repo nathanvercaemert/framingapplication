@@ -6,12 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReportModel extends Model
 {
+    public static function userReports()
+    {
+        $user = auth()->user()->id;
+        $reports = ReportModel::where('user', $user)->get();
+        return $reports;
+    }
     public static function nextReportNumber()
     {
         $user = auth()->user()->id;
         $maxReport = \DB::select(
             \DB::raw("
-                SELECT MAX(reportNumber) reportNumber
+                SELECT MAX(CAST(reportNumber AS SIGNED)) reportNumber
                 FROM report_models
                 WHERE user = :user;
             "),

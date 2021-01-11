@@ -199,25 +199,30 @@
                             </div>
                         </div>
                         <div :hidden="canvasIsHidden == 1">
-                            <div class="form-row" >
+                            <div class="form-row">
                                 <div class="col float-left">
                                     <button type="button" class="btn btn-primary" name="drawingModeButton" id="drawingModeButton">Enter Drawing Mode</button>
                                 </div>
-                                <div :hidden="isDrawingMode == 0" class="col float-right">
-                                    <button type="button" class="btn btn-primary col float-right" name="pencilButton" id="pencilButton">Pencil</button>
-                                </div>
-                                <div :hidden="isDrawingMode == 0" class="col float-right">
-                                    <button type="button" class="btn btn-primary col float-right" name="eraserButton" id="eraserButton">Eraser</button>
-                                </div>
-                                <div :hidden="isDrawingMode == 0" class="col float-right">
-                                    <button type="button" class="btn btn-primary col float-right" name="textButton" id="textButton">Text</button>
-                                </div>
-                                <div :hidden="isDrawingMode == 0" class="col float-right">
-                                    <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
+                                <div :hidden="isDrawingMode == 1" class="col input-group float-right">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary" type="button" id="textButton">Add Text</button>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Input Text" id="canvasInputText">
                                 </div>
                             </div>
                             <div id="cContainer" style="position: relative;">
                                 <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh"></canvas>
+                            </div>
+                            <div class="form-row" >
+                                <div :hidden="isDrawingMode == 0" class="col float-left">
+                                    <button type="button" class="btn btn-primary col float-right" name="eraserButton" id="eraserButton">Eraser</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-left">
+                                    <button type="button" class="btn btn-primary col float-right" name="pencilButton" id="pencilButton">Pencil</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
+                                </div>
                             </div>
                         </div>
                         <p></p>

@@ -2614,11 +2614,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.$root.resetCreateCanvas();
     var canvas = this.__canvas = new fabric.Canvas('c', {
-      isDrawingMode: true
+      isDrawingMode: false
     });
-    canvas.setHeight(Math.floor(.9 * window.innerHeight));
+    canvas.setHeight(Math.floor(.8 * window.innerHeight));
     canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10));
     fabric.Object.prototype.transparentCorners = false;
+    fabric.Object.prototype.selectable = false;
     var drawingButton = document.getElementById('drawingButton');
     drawingButton.addEventListener("click", this.showHideCanvas);
     var drawingModeButton = document.getElementById('drawingModeButton');
@@ -2643,24 +2644,62 @@ __webpack_require__.r(__webpack_exports__);
       if (this.$root.canvasIsHidden) {
         drawingButton.innerHTML = "Show Drawing";
       } else {
-        // canvas.height = window.innerHeight
-        fabric.Object.prototype.transparentCorners = false;
+        drawingButton.innerHTML = "Hide Drawing";
       }
     },
     drawingModeButton: function drawingModeButton() {
       var drawingModeButton = document.getElementById('drawingModeButton');
+      var fabricCanvas = this.__canvas;
       this.$root.isDrawingMode = !this.$root.isDrawingMode;
 
       if (this.$root.isDrawingMode) {
+        fabricCanvas.isDrawingMode = true;
+        fabricCanvas.freeDrawingBrush.color = 'black';
+        fabricCanvas.freeDrawingBrush.width = 1;
         drawingModeButton.innerHTML = 'Save';
       } else {
+        fabricCanvas.isDrawingMode = false;
         drawingModeButton.innerHTML = 'Enter Drawing Mode';
       }
     },
-    pencilButton: function pencilButton() {},
-    eraserButton: function eraserButton() {},
-    textButton: function textButton() {},
-    undoButton: function undoButton() {}
+    pencilButton: function pencilButton() {
+      var fabricCanvas = this.__canvas;
+      fabricCanvas.isDrawingMode = true;
+      fabricCanvas.freeDrawingBrush.color = 'black';
+      fabricCanvas.freeDrawingBrush.width = 1;
+    },
+    eraserButton: function eraserButton() {
+      var fabricCanvas = this.__canvas;
+      fabricCanvas.isDrawingMode = true;
+      fabricCanvas.freeDrawingBrush.color = 'white';
+      fabricCanvas.freeDrawingBrush.width = 50;
+    },
+    textButton: function textButton() {
+      var text = null;
+
+      if (document.getElementById('canvasInputText').value) {
+        text = document.getElementById('canvasInputText').value;
+        var fabricCanvas = this.__canvas;
+        var xCenter = fabricCanvas.width / 2;
+        var yCenter = fabricCanvas.height / 2;
+        var fabricText = fabricCanvas.add(new fabric.IText(text, {
+          fontFamily: 'Delicious_500',
+          left: xCenter,
+          top: yCenter,
+          selectable: true
+        }));
+      }
+    },
+    undoButton: function undoButton() {
+      var fabricCanvas = this.__canvas;
+      var lastItemIndex = fabricCanvas.getObjects().length - 1;
+      var item = fabricCanvas.item(lastItemIndex);
+
+      if (item.get('type') === 'path') {
+        fabricCanvas.remove(item);
+        fabricCanvas.renderAll();
+      }
+    }
   }
 });
 

@@ -216,7 +216,9 @@
                                     <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
                                 </div>
                             </div>
-                            <canvas id="canvas" class="w-100"></canvas>
+                            <div id="canvasContainer" style="position: relative;">
+                                <canvas id="canvas" class="w-100"></canvas>
+                            </div>
                         </div>
                         <p></p>
                         <!-- Passing javascript variables to request -->

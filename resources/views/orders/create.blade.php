@@ -192,14 +192,14 @@
                                 <textarea type="text" class="form-control" name="orderNotes" id="orderNotes" placeholder="Notes">{{old('orderNotes')}}</textarea>
                             </div>
                         </div>
-                        <div class="form-row text-right mb-2">
+                        <div class="form-row text-right mb-2" id="drawingButtonRow">
                             <label class="col w-50 col-form-label" for="drawingButton">Drawing</label>
                             <div class="col w-50">
                                 <button type="button" class="btn btn-primary" style="width:100%" name="drawingButton" id="drawingButton">Show Drawing</button>
                             </div>
                         </div>
                         <div :hidden="canvasIsHidden == 1">
-                            <div class="form-row">
+                            <div class="form-row" >
                                 <div class="col float-left">
                                     <button type="button" class="btn btn-primary" name="drawingModeButton" id="drawingModeButton">Enter Drawing Mode</button>
                                 </div>

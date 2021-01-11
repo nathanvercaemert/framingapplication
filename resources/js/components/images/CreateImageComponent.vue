@@ -1,7 +1,7 @@
 <template>
     <style>
         .canvas-container {
-            position: static;
+            position: relative,
         }
     </style>
 </template>
@@ -13,21 +13,9 @@
             this.$root.resetCreateCanvas();
 
             var canvas = document.getElementById('canvas')
-            let canvasWidth = canvas.parentElement.parentElement.offsetWidth
+            let canvasWidth = $("#drawingButtonRow").width() - 10 // for padding
             let canvasHeight = .9 * window.innerHeight
-            canvas.setAttribute('min-height', canvasHeight)
-            canvas.style.height = canvasHeight
-            canvas.parentNode.setAttribute('min-height', canvasHeight)
-            canvas.parentElement.setAttribute('min-height', canvasHeight)
-            canvas.parentNode.setAttribute('position', 'relative')
-            canvas.parentElement.setAttribute('position', 'relative')
-            canvas.parentElement.style.height = canvasHeight
-            canvas.parentElement.parentNode.setAttribute('min-height', canvasHeight)
-            canvas.parentElement.parentElement.setAttribute('min-height', canvasHeight)
-            canvas.parentElement.parentNode.setAttribute('position', 'relative')
-            canvas.parentElement.parentElement.setAttribute('position', 'relative')
-            canvas.parentElement.parentElement.style.height = canvasHeight
-            this.$root.fabricCanvas = new fabric.Canvas('canvas', { width: canvasWidth, height: canvasHeight,
+            this.$root.fabricCanvas = new fabric.Canvas('canvas', {  height: canvasHeight, width: canvasWidth,
                                                                                                     selection : false,
                                                                                                     controlsAboveOverlay:true,
                                                                                                     centeredScaling:true,

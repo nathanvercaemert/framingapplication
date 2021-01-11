@@ -16,6 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->timestamp('completed_at')->nullable();
+            $table->string('isCompleted');
             $table->string('user');
             $table->string('orderNumber');
             $table->string('isReported');
@@ -35,6 +37,7 @@ class CreateOrdersTable extends Migration
             $table->string('orderFirstMatNumber');
             $table->string('orderSecondMatNumber');
             $table->string('orderThirdMatNumber');
+            $table->string('orderPrice');
             $table->text('orderNotes');
         });
     }

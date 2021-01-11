@@ -123,6 +123,9 @@ class BasicTestSeeder extends Seeder
                     'orderSecondMatNumber' => $orderNumber + 1,
                     'orderThirdMatNumber' => -1,
                     'orderNotes' => $orderNotes,
+                    'isCompleted' => 0,
+                    'completed_at' => null,
+                    'orderPrice' => 100.00,
                 ]);
                 $orderNumber++;
             }
@@ -155,6 +158,9 @@ class BasicTestSeeder extends Seeder
                     'orderSecondMatNumber' => -1,
                     'orderThirdMatNumber' => -1,
                     'orderNotes' => $orderNotes,
+                    'isCompleted' => 0,
+                    'completed_at' => null,
+                    'orderPrice' => 100.00,
                 ]);
                 $orderNumber++;
             }
@@ -223,6 +229,9 @@ class BasicTestSeeder extends Seeder
             'orderSecondMatNumber' => -1,
             'orderThirdMatNumber' => -1,
             'orderNotes' => 'notes for order 9',
+            'isCompleted' => 0,
+            'completed_at' => null,
+            'orderPrice' => 100.00,
         ]);
         DB::table('orders')->insert([
             'created_at' => now()->subDays(3),
@@ -247,6 +256,9 @@ class BasicTestSeeder extends Seeder
             'orderSecondMatNumber' => -1,
             'orderThirdMatNumber' => -1,
             'orderNotes' => 'notes for order 10',
+            'isCompleted' => 0,
+            'completed_at' => null,
+            'orderPrice' => 100.00,
         ]);
     }
 }

@@ -7,10 +7,13 @@
             <div class="card">
                 <div class="card-header">
                     <div class="row">
-                        <div class="col w-50 text-left">
+                        <div class="col w-33 text-left">
                             Edit Order: {{$order->orderNumber}}
                         </div>
-                        <div class="col w-50 text-right">
+                        <div class="col w-33 text-center">
+                            Price: <span name="priceSpan" id="priceSpan"></span>
+                        </div>
+                        <div class="col w-33 text-right">
                             Report: {{$order->isReported ? $order->reportNumber : "Unreported"}}
                         </div>
                     </div>
@@ -241,12 +244,26 @@
     </div>
 </div>
 
-@include('modals.orders.delete')
-
 <order-component ref="orderComponent"
+                    :oldfirstmatnumber="{{old('firstMatNumber') == null ? ($order->orderFirstMatNumber == -1 ? 0 : 1) : 1}}"
                     :oldsecondmatnumber="{{old('secondMatNumber') == null ? ($order->orderSecondMatNumber == -1 ? 0 : 1) : 1}}"
                     :oldthirdmatnumber="{{old('thirdMatNumber') == null ? ($order->orderThirdMatNumber == -1 ? 0 : 1) : 1}}"
                     :oldisframe="{{old('isFrame') == null ? ($order->orderType == 'Frame' ? 1 : 0) : old('isFrame')}}"
+                    :reportnumber="-2"
+                    :price="0"
 ></order-component>
+
+<edit-price-update-component ref="editPriceUpdateComponent"
+                            :priceupdatetest="0"
+                            :isediting="1"
+                            :price="{{$order->orderPrice}}"
+></edit-price-update-component>
+
+<edit-order-fix-component ref="editOrderFixComponent"
+                            :olddata="{{old('firstMatPresent') != null ? 1 : 0}}"
+                            :oldfirstmatpresent="{{old('firstMatPresent') != null ? old('firstMatPresent') : 0}}"
+                            :secondmatnumberisvisible="{{old('secondMatNumberIsVisible') != null ? old('secondMatNumberIsVisible') : ($order->orderSecondMatNumber == -1 ? 0 : 1)}}"
+                            :thirdmatnumberisvisible="{{old('thirdMatNumberIsVisible') != null ? old('thirdMatNumberIsVisible') : ($order->orderThirdMatNumber == -1 ? 0 : 1)}}"
+></edit-order-fix-component>
 
 @endsection

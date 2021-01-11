@@ -123,8 +123,11 @@ class OrdersController extends Controller
                 $order->orderGlassType = -1;
             }
         }
+        $order->orderPrice = Order::price($order->orderHeight, $order->orderWidth, $order->orderMouldingNumber, $order->orderFirstMatNumber, $order->orderSecondMatNumber, $order->orderThirdMatNumber, $order->orderGlassType, $order->orderFoamcoreType);
         $order->save();
-        return redirect('/orders');
+        $orderId = $order->id;
+        $redirectString = '/orders/view/' . strval($orderId);
+        return redirect($redirectString);
     }
 
     public function store()
@@ -150,6 +153,7 @@ class OrdersController extends Controller
         $order->orderType = request('orderType');
         $order->orderWidth = request('orderWidth');
         $order->orderHeight = request('orderHeight');
+        $order->isCompleted = 0;
         if (request()->isFrame) {
             if (request('firstMatNumber') != null) {
                 $order->orderFirstMatNumber = request('firstMatNumber');
@@ -176,6 +180,7 @@ class OrdersController extends Controller
             $order->orderMouldingNumber = -1;
             $order->orderGlassType = -1;
         }
+        $order->orderPrice = Order::price($order->orderHeight, $order->orderWidth, $order->orderMouldingNumber, $order->orderFirstMatNumber, $order->orderSecondMatNumber, $order->orderThirdMatNumber, $order->orderGlassType, $order->orderFoamcoreType);
         $order->save();
         $order = Order::where('orderNumber', $order->orderNumber)->where('user', auth()->user()->id)->firstOrFail();
         $orderId = $order->id;
@@ -187,6 +192,24 @@ class OrdersController extends Controller
     {
         Order::find($id)->delete();
         return redirect('/orders');
+    }
+
+    public function complete($id) {
+        Order::completionFunction($id);
+        $redirectString = '/orders/view/' . $id;
+        return redirect($redirectString);
+    }
+
+    public function price() {
+        $mouldingNumber = request('mouldingNumber');
+        $firstMat = request('firstMat');
+        $secondMat = request('secondMat');
+        $thirdMat = request('thirdMat');
+        $glass = request('glass');
+        $foamcore = request('foamcore');
+        $width = request('orderWidth');
+        $height = request('orderHeight');
+        return Order::price($height, $width, $mouldingNumber, $firstMat, $secondMat, $thirdMat, $glass, $foamcore);
     }
 
 }

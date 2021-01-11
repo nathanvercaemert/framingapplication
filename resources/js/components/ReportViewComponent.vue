@@ -3,10 +3,11 @@
 
 <script>
     export default {
-        props: ['reportorders', 'isdaterange', 'daterangeend', 'reportordersnonid'],
+        props: ['reportorders', 'isdaterange', 'daterangeend', 'reportordersnonid', 'reportviewid'],
         mounted() {
             var isDateRange = this.isdaterange;
             this.$root.viewIsDateRange = isDateRange;
+            this.$root.reportViewId = this.reportviewid;
             var endDate = "";
             if (isDateRange) {
                 endDate = new Date(this.daterangeend);

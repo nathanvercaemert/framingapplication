@@ -2619,19 +2619,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.$root.resetCreateCanvas();
     var canvas = document.getElementById('canvas');
-    var canvasWidth = canvas.parentElement.parentElement.offsetWidth;
+    var canvasWidth = $("#drawingButtonRow").width() - 10; // for padding
+
     var canvasHeight = .9 * window.innerHeight;
-    canvas.setAttribute('min-height', canvasHeight);
-    canvas.style.height = canvasHeight;
-    canvas.parentNode.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.style.height = canvasHeight;
-    canvas.parentElement.parentNode.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.parentElement.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.parentElement.style.height = canvasHeight;
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
-      width: canvasWidth,
       height: canvasHeight,
+      width: canvasWidth,
       selection: false,
       controlsAboveOverlay: true,
       centeredScaling: true,

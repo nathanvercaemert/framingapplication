@@ -13,11 +13,11 @@
             this.$root.resetCreateCanvas();
 
             var canvas = document.getElementById('canvas')
-            let canvasWidth = $("#drawingButtonRow").width() - 10 // for padding
-            let canvasHeight = .9 * window.innerHeight
+            let canvasWidth = Math.floor($("#drawingButtonRow").width() - 10) // for padding
+            let canvasHeight = Math.floor(.9 * window.innerHeight)
             canvas.parentElement.setAttribute('height', canvasHeight)
             canvas.parentElement.setAttribute('min-height', canvasHeight)
-            canvas.parentElement.style.height = canvasHeight.toString() + "px"
+            canvas.parentElement.style.height = Math.floor(canvasHeight).toString() + "px"
             this.$root.fabricCanvas = new fabric.Canvas('canvas', {  height: canvasHeight, width: canvasWidth,
                                                                                                     selection : false,
                                                                                                     controlsAboveOverlay:true,
@@ -35,6 +35,21 @@
                 canvas.allowTouchScrolling = true;
             };
             this.$root.fabricCanvas.on('mouse:up', enableScroll);
+            var children = canvas.parentElement.childNodes;
+            children.forEach(function(child){
+                let childrenChildren = child.childNodes
+                childrenChildren.forEach(function(childChild){
+                    let childrenChildrenChildren = childChild.childNodes
+                    childrenChildrenChildren.forEach(function(childChildChild){
+                        childChildChild.setAttribute('height', canvasHeight)
+                        childChildChild.setAttribute('width', canvasWidth)
+                    })
+                    childChild.setAttribute('height', canvasHeight)
+                    childChild.setAttribute('width', canvasWidth)
+                })
+                child.setAttribute('height', canvasHeight)
+                child.setAttribute('width', canvasWidth)
+            });
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)
@@ -52,9 +67,7 @@
             // this.$root.fabricCanvas.setWidth(window.innerWidth)
             // this.$root.fabricCanvas.setHeight(.9 * window.innerHeight)
             canvas.style.border = '5px solid #AAA'
-            canvas.style.width = "100%"
             canvas.style.margin = '0px'
-            canvas.style.minHeight = '90vh'
 
             // var canvasContainer = document.getElementById('canvasContainer')
             // var canvas = document.getElementById('canvas')

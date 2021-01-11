@@ -2619,12 +2619,12 @@ __webpack_require__.r(__webpack_exports__);
   mounted: function mounted() {
     this.$root.resetCreateCanvas();
     var canvas = document.getElementById('canvas');
-    var canvasWidth = $("#drawingButtonRow").width() - 10; // for padding
+    var canvasWidth = Math.floor($("#drawingButtonRow").width() - 10); // for padding
 
-    var canvasHeight = .9 * window.innerHeight;
+    var canvasHeight = Math.floor(.9 * window.innerHeight);
     canvas.parentElement.setAttribute('height', canvasHeight);
     canvas.parentElement.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.style.height = canvasHeight.toString() + "px";
+    canvas.parentElement.style.height = Math.floor(canvasHeight).toString() + "px";
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
       height: canvasHeight,
       width: canvasWidth,
@@ -2646,6 +2646,21 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     this.$root.fabricCanvas.on('mouse:up', enableScroll);
+    var children = canvas.parentElement.childNodes;
+    children.forEach(function (child) {
+      var childrenChildren = child.childNodes;
+      childrenChildren.forEach(function (childChild) {
+        var childrenChildrenChildren = childChild.childNodes;
+        childrenChildrenChildren.forEach(function (childChildChild) {
+          childChildChild.setAttribute('height', canvasHeight);
+          childChildChild.setAttribute('width', canvasWidth);
+        });
+        childChild.setAttribute('height', canvasHeight);
+        childChild.setAttribute('width', canvasWidth);
+      });
+      child.setAttribute('height', canvasHeight);
+      child.setAttribute('width', canvasWidth);
+    });
     var drawingButton = document.getElementById('drawingButton');
     drawingButton.addEventListener("click", this.showHideCanvas);
     var drawingModeButton = document.getElementById('drawingModeButton');
@@ -2661,9 +2676,7 @@ __webpack_require__.r(__webpack_exports__);
     // this.$root.fabricCanvas.setHeight(.9 * window.innerHeight)
 
     canvas.style.border = '5px solid #AAA';
-    canvas.style.width = "100%";
-    canvas.style.margin = '0px';
-    canvas.style.minHeight = '90vh'; // var canvasContainer = document.getElementById('canvasContainer')
+    canvas.style.margin = '0px'; // var canvasContainer = document.getElementById('canvasContainer')
     // var canvas = document.getElementById('canvas')
     // var context = canvas.getContext('2d');
   },

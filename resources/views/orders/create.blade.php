@@ -217,7 +217,7 @@
                                 </div>
                             </div>
                             <div id="canvasContainer" style="position: relative;">
-                                <canvas id="canvas" class="w-100"></canvas>
+                                <canvas id="canvas"></canvas>
                             </div>
                         </div>
                         <p></p>

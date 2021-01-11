@@ -15,6 +15,9 @@
             var canvas = document.getElementById('canvas')
             let canvasWidth = canvas.parentElement.parentElement.offsetWidth
             let canvasHeight = .9 * window.innerHeight
+            canvas.setAttribute('height', canvasHeight)
+            canvas.parentElement.setAttribute('height', canvasHeight)
+            canvas.parentElement.parentElement.setAttribute('height', canvasHeight)
             this.$root.fabricCanvas = new fabric.Canvas('canvas', { width: canvasWidth, height: canvasHeight,
                                                                                                     selection : false,
                                                                                                     controlsAboveOverlay:true,

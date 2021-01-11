@@ -2621,6 +2621,9 @@ __webpack_require__.r(__webpack_exports__);
     var canvas = document.getElementById('canvas');
     var canvasWidth = canvas.parentElement.parentElement.offsetWidth;
     var canvasHeight = .9 * window.innerHeight;
+    canvas.setAttribute('height', canvasHeight);
+    canvas.parentElement.setAttribute('height', canvasHeight);
+    canvas.parentElement.parentElement.setAttribute('height', canvasHeight);
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
       width: canvasWidth,
       height: canvasHeight,

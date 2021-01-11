@@ -7,12 +7,13 @@
         mounted() {
             this.$root.resetCreateCanvas();
 
-            var canvas = this.__canvas = new fabric.Canvas('c', {
-                isDrawingMode: true
+            let canvas = this.__canvas = new fabric.Canvas('c', {
+                isDrawingMode: false,
             });
-            canvas.setHeight(Math.floor(.9 * window.innerHeight))
+            canvas.setHeight(Math.floor(.8 * window.innerHeight))
             canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10))
             fabric.Object.prototype.transparentCorners = false;
+            fabric.Object.prototype.selectable = false;
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)
@@ -37,30 +38,59 @@
                 if (this.$root.canvasIsHidden) {
                     drawingButton.innerHTML = "Show Drawing"
                 } else {
-                    // canvas.height = window.innerHeight
-                    fabric.Object.prototype.transparentCorners = false;
+                    drawingButton.innerHTML = "Hide Drawing"
                 }
             },
             drawingModeButton: function drawingModeButton() {
                 let drawingModeButton = document.getElementById('drawingModeButton')
+                let fabricCanvas = this.__canvas
                 this.$root.isDrawingMode = !this.$root.isDrawingMode
                 if (this.$root.isDrawingMode) {
+                    fabricCanvas.isDrawingMode = true
+                    fabricCanvas.freeDrawingBrush.color = 'black'
+                    fabricCanvas.freeDrawingBrush.width = 1
                     drawingModeButton.innerHTML = 'Save';
                 }
                 else {
+                    fabricCanvas.isDrawingMode = false
                     drawingModeButton.innerHTML = 'Enter Drawing Mode';
                 }
             },
             pencilButton: function pencilButton() {
+                let fabricCanvas = this.__canvas
+                fabricCanvas.isDrawingMode = true
+                fabricCanvas.freeDrawingBrush.color = 'black'
+                fabricCanvas.freeDrawingBrush.width = 1
             },
             eraserButton: function eraserButton() {
-
+                let fabricCanvas = this.__canvas
+                fabricCanvas.isDrawingMode = true
+                fabricCanvas.freeDrawingBrush.color = 'white'
+                fabricCanvas.freeDrawingBrush.width = 50
             },
             textButton: function textButton() {
-
+                let text = null
+                if (document.getElementById('canvasInputText').value) {
+                    text = document.getElementById('canvasInputText').value
+                    let fabricCanvas = this.__canvas
+                    let xCenter = fabricCanvas.width / 2
+                    let yCenter = fabricCanvas.height / 2
+                    let fabricText = fabricCanvas.add(new fabric.IText(text, {
+                        fontFamily: 'Delicious_500',
+                        left: xCenter,
+                        top: yCenter,
+                        selectable: true,
+                    }));
+                }
             },
             undoButton: function undoButton() {
-
+                var fabricCanvas = this.__canvas
+                var lastItemIndex = (fabricCanvas.getObjects().length - 1);
+                var item = fabricCanvas.item(lastItemIndex);
+                if(item.get('type') === 'path') {
+                    fabricCanvas.remove(item);
+                    fabricCanvas.renderAll();
+                }
             },
         }
     }

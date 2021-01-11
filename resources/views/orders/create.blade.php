@@ -217,7 +217,7 @@
                                 </div>
                             </div>
                             <div id="canvasContainer" style="position: relative;">
-                                <canvas id="canvas"></canvas>
+                                <canvas id="canvas" style="border: 5px solid #AAA;"></canvas>
                             </div>
                         </div>
                         <p></p>

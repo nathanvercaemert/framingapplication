@@ -1,10 +1,7 @@
 <template>
     <style>
-        upper-canvas {
-            height: 100%;
-        }
-        lower-canvas {
-            width: 100%;
+        .canvas-container {
+            position: static;
         }
     </style>
 </template>

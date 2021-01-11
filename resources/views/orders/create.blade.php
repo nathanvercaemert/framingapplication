@@ -235,7 +235,7 @@
                         <div hidden>
                             <input type ="text" :value="{{$nextOrderNumber}}" name="orderNumber" id="orderNumber">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width:100%">Submit Order</button>
+                        <button type="submit" class="btn btn-primary" style="width:100%; position:relative">Submit Order</button>
                     </form>
                     @if ($errors->any())
                         <p></p>

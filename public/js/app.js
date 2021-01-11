@@ -2625,9 +2625,13 @@ __webpack_require__.r(__webpack_exports__);
     canvas.style.height = canvasHeight;
     canvas.parentNode.setAttribute('min-height', canvasHeight);
     canvas.parentElement.setAttribute('min-height', canvasHeight);
+    canvas.parentNode.setAttribute('position', 'relative');
+    canvas.parentElement.setAttribute('position', 'relative');
     canvas.parentElement.style.height = canvasHeight;
     canvas.parentElement.parentNode.setAttribute('min-height', canvasHeight);
     canvas.parentElement.parentElement.setAttribute('min-height', canvasHeight);
+    canvas.parentElement.parentNode.setAttribute('position', 'relative');
+    canvas.parentElement.parentElement.setAttribute('position', 'relative');
     canvas.parentElement.parentElement.style.height = canvasHeight;
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
       width: canvasWidth,

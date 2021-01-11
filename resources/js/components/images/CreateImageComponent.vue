@@ -16,6 +16,8 @@
             let canvasWidth = $("#drawingButtonRow").width() - 10 // for padding
             let canvasHeight = .9 * window.innerHeight
             canvas.parentElement.setAttribute('height', canvasHeight)
+            canvas.parentElement.setAttribute('min-height', canvasHeight)
+            canvas.parentElement.style.height = canvasHeight.toString() + "px"
             this.$root.fabricCanvas = new fabric.Canvas('canvas', {  height: canvasHeight, width: canvasWidth,
                                                                                                     selection : false,
                                                                                                     controlsAboveOverlay:true,

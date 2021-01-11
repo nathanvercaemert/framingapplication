@@ -23,6 +23,7 @@
                                                                                                     controlsAboveOverlay:true,
                                                                                                     centeredScaling:true,
                                                                                                     allowTouchScrolling: true })
+            this.$root.fabricCanvas.setDimensions({width: canvasWidth, height: canvasHeight})
             fabric.Object.prototype.selectable = false;
             this.$root.fabricCanvas.on('selection:created', (e) => {
                 if(e.target.type === 'activeSelection') {
@@ -41,14 +42,20 @@
                 childrenChildren.forEach(function(childChild){
                     let childrenChildrenChildren = childChild.childNodes
                     childrenChildrenChildren.forEach(function(childChildChild){
-                        childChildChild.setAttribute('height', canvasHeight)
-                        childChildChild.setAttribute('width', canvasWidth)
+                        // childChildChild.setAttribute('height', canvasHeight)
+                        // childChildChild.setAttribute('width', canvasWidth)
+                        childChildChild.style.height = canvasHeight.toString + "px"
+                        childChildChild.style.width = canvasWidth.toString + "px"
                     })
-                    childChild.setAttribute('height', canvasHeight)
-                    childChild.setAttribute('width', canvasWidth)
+                    // childChild.setAttribute('height', canvasHeight)
+                    // childChild.setAttribute('width', canvasWidth)
+                    childChild.style.height = canvasHeight.toString + "px"
+                    childChild.style.width = canvasWidth.toString + "px"
                 })
-                child.setAttribute('height', canvasHeight)
-                child.setAttribute('width', canvasWidth)
+                // child.setAttribute('height', canvasHeight)
+                // child.setAttribute('width', canvasWidth)
+                child.style.height = canvasHeight.toString + "px"
+                child.style.width = canvasWidth.toString + "px"
             });
 
             let drawingButton = document.getElementById('drawingButton')

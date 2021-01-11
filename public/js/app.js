@@ -2623,6 +2623,8 @@ __webpack_require__.r(__webpack_exports__);
 
     var canvasHeight = .9 * window.innerHeight;
     canvas.parentElement.setAttribute('height', canvasHeight);
+    canvas.parentElement.setAttribute('min-height', canvasHeight);
+    canvas.parentElement.style.height = canvasHeight.toString() + "px";
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
       height: canvasHeight,
       width: canvasWidth,

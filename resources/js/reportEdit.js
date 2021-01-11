@@ -11,6 +11,7 @@ export default {
         editIsReported: 0,
         editSameReportPreviouslyRemoved: 0,
         editAlreadyInOrderList: 0,
+        empty: 'empty',
 
 
         editReportViewOrderIsFrame: null,

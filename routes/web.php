@@ -74,6 +74,7 @@ Route::patch('/mats/edit/{id}', 'MatModelsController@update');
 Route::patch('/glasses/edit/{id}', 'GlassesController@update');
 Route::patch('/foamcores/edit/{id}', 'FoamcoresController@update');
 
+Route::delete('/reports/delete/{id}', 'ReportModelsController@destroy');
 Route::delete('/orders/delete/{id}', 'OrdersController@destroy');
 Route::delete('/mouldings/delete/{id}', 'MouldingsController@destroy');
 Route::delete('/vendors/delete/{id}', 'VendorsController@destroy');
@@ -81,10 +82,18 @@ Route::delete('/mats/delete/{id}', 'MatModelsController@destroy');
 Route::delete('/glasses/delete/{id}', 'GlassesController@destroy');
 Route::delete('/foamcores/delete/{id}', 'FoamcoresController@destroy');
 
+//ajax for reports
 Route::get('/reports/add', 'ReportModelsController@addOrder');
 Route::get('/reports/load', 'ReportModelsController@loadOrder');
 Route::get('/reports/verify', 'ReportModelsController@verifyDateRangeContainsOrder');
 Route::get('/reports/daterangeorders', 'ReportModelsController@dateRangeOrdersInReport');
+Route::get('/reports/getbynumber', 'ReportModelsController@getByNumber');
+
+Route::patch('/reports/process/{id}', 'ReportModelsController@process');
+Route::patch('/orders/complete/{id}', 'OrdersController@complete');
+
+//price updating ajax
+Route::get('/orders/price', 'OrdersController@price');
 
 Auth::routes();
 

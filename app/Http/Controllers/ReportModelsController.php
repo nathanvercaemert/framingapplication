@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundException;
 use App\ReportModel;
 use App\Order;
 use Carbon\Carbon;
@@ -33,7 +34,8 @@ class ReportModelsController extends Controller
             $report = ReportModel::find($id);
         }
         $viewOrders = implode(",", Order::idsToOrderNumbers($report->reportOrderList));
-        return view('reports.view',['report' => $report, 'viewOrders' => $viewOrders]);
+        $vendors = ReportModel::reportContents($report->reportOrderList);
+        return view('reports.view',['report' => $report, 'viewOrders' => $viewOrders, 'vendors' => $vendors]);
     }
 
 
@@ -98,6 +100,7 @@ class ReportModelsController extends Controller
     {
         $report = ReportModel::find($id);
         $unreport = request('editUnreportCheckList');
+        $reportNumber =  request('editReportNumber');
 
         $beginDate = null;
         $endDate = null;
@@ -108,7 +111,7 @@ class ReportModelsController extends Controller
             $endDate = $endDate->addDays(1);
             $beginDateFormatted = $beginDate->format('Y-m-d H:i:s');
             $endDateFormatted = $endDate->format('Y-m-d H:i:s');
-            $orders = Order::dateRangeOrders($beginDateFormatted, $endDateFormatted);
+            $orders = Order::dateRangeOrdersUpdate($beginDateFormatted, $endDateFormatted, $reportNumber);
             $orderNumbers = [];
             foreach ($orders as $index => $value){
                 $orderNumbers[] = strval($value->id);
@@ -137,6 +140,7 @@ class ReportModelsController extends Controller
         ]);
         if ($validator->fails()) {
             $oldInputModified = request()->all();
+            $oldInputModified["editEditOrders"] = "empty";
             if ($isDateRange) {
                 $oldInputModified["editEndDatepicker"] = $endDate->format('m/d/Y');
             }
@@ -152,15 +156,13 @@ class ReportModelsController extends Controller
         }
         $orders = implode(',', $orders);
 
-        $report->reportNumber = request('editReportNumber');
+        $report->reportNumber = $reportNumber;
         $report->reportOrderList = $orders;
         $report->reportIsDateRange = request('editIsDateRange');
         $report->beginDate = $beginDate;
         $report->endDate = $endDate;
         $report->reportIsSpecificOrders = request('editIsSpecificOrders');
         $report->user = auth()->user()->id;
-        $report->isProcessed = 0;
-        $report->processed_at = null;
         $report->reportNotes = request('editReportNotes');
         $unreport = Order::orderNumbersToIds($unreport);
         $unreport = implode(",", array_diff($unreport, explode(",",$orders)));
@@ -272,5 +274,25 @@ class ReportModelsController extends Controller
         }
         $return = array('orders' => $orders);
         return json_encode($return);
+    }
+
+    public function getByNumber() {
+        $reportNumber = request('reportNumber');
+        $report = ReportModel::getByNumber($reportNumber);
+        return $report;
+    }
+
+    public function destroy($id)
+    {
+        $report = ReportModel::find($id);
+        Order::unreportOrders($report->reportOrderList);
+        ReportModel::find($id)->delete();
+        return redirect('/reports');
+    }
+
+    public function process($reportId) {
+        ReportModel::process($reportId);
+        $redirectString = '/reports/view/' . $reportId;
+        return redirect($redirectString);
     }
 }

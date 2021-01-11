@@ -3,7 +3,7 @@
 
 <script>
     export default {
-        props: ['editorders', 'editreportorders', 'isdaterange', 'isspecificorders', 'daterangebegin', 'daterangeend', 'reportnumber'],
+        props: ['editorders', 'editordersold', 'editreportorders', 'isdaterange', 'isspecificorders', 'daterangebegin', 'daterangeend', 'reportnumber', 'isprocessed'],
         mounted() {
             this.$root.editOrderListCount = 0;
             var isDateRange = this.isdaterange;
@@ -31,27 +31,37 @@
 
             // Create the list of orders attached to the report.
 
-            this.editorders.forEach(function (item) {
-                let li = document.createElement('a');
-                li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
-                let span = document.createElement('span');
-                span.className += "badge badge-primary badge-pill";
-                span.innerHTML += "View/Remove";
-                li.setAttribute('data-toggle', "modal");
-                li.setAttribute('data-target', "#editReportViewOrder");
-                document.getElementById('editOrderList').appendChild(li);
-                li.innerHTML += item;
-                li.setAttribute('value', item);
-                function some_func(otherFunc, ev) {
-                    otherFunc(li.getAttribute('value'));
-                }
-                li.addEventListener ("click", some_func.bind(null, this.editLoadReportViewOrder), false);
-                li.appendChild(span);
-                this.$root.editOrderListCount++;
-            }.bind(this));
-
-            //Create the list of orders to be unreported
-            document.getElementById('editUnreportCheckList').value = this.editorders;
+            if (this.editorders === 'empty') {
+                document.getElementById('editUnreportCheckList').value = this.editordersold;
+            } else {
+                this.editorders.forEach(function (item) {
+                    let li = document.createElement('a');
+                    if (this.isprocessed == 1) {
+                        li.className += "disabled list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+                    } else {
+                        li.className += "list-group-item list-group-item-action d-flex justify-content-between align-items-center";
+                    }
+                    let span = document.createElement('span');
+                    span.className += "badge badge-primary badge-pill";
+                    span.innerHTML += "View/Remove";
+                    if (this.isprocessed == 0) {
+                        li.setAttribute('data-toggle', "modal");
+                        li.setAttribute('data-target', "#editReportViewOrder");
+                    }
+                    document.getElementById('editOrderList').appendChild(li);
+                    li.innerHTML += item;
+                    li.setAttribute('value', item);
+                    function some_func(otherFunc, ev) {
+                        otherFunc(li.getAttribute('value'));
+                    }
+                    if (this.isprocessed == 0) {
+                        li.addEventListener ("click", some_func.bind(null, this.editLoadReportViewOrder), false);
+                    }
+                    li.appendChild(span);
+                    this.$root.editOrderListCount++;
+                }.bind(this));
+                document.getElementById('editUnreportCheckList').value = this.editorders;
+            }
         },
         methods: {
             editSubmitFunction: function editSubmitFunction() {

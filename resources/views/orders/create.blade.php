@@ -1,12 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container">
     <div class="row justify-content-center">
         <div class="col">
             <div class="card">
                 <div class="card-header">
-                    Create Order: {{$nextOrderNumber}}
+                    <div class="row">
+                        <div class="col w-50 text-left">
+                            Create Order: {{$nextOrderNumber}}
+                        </div>
+                        <div class="col w-50 text-right">
+                            Price: <span name="priceSpan" id="priceSpan"></span>
+                        </div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form class="needs-validation" method="POST" action="/orders" novalidate>
@@ -96,7 +104,7 @@
                                 <div class="input-group">
                                     <input :disabled="isFrame == 0" @change="addFirstMat" type="text" class="form-control" name="firstMatNumber" id="firstMatNumber" placeholder="1234" value="{{old('firstMatNumber')}}" style="{{ $errors->has('firstMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
                                     <div :hidden="secondMatNumberIsVisible == 1" class="input-group-append">
-                                        <button @click="removeFirstMat" class="btn btn-outline-secondary" type="button">X</button>
+                                        <button @click="removeFirstMat" name="firstMatRemoveButton" id="firstMatRemoveButton" class="btn btn-outline-secondary" type="button">X</button>
                                     </div>
                                     <div class="invalid-feedback">
                                         Please provide a mat number.
@@ -117,7 +125,7 @@
                                 <div class="input-group">
                                     <input :disabled="isFrame == 0 || secondMatNumberIsVisible == 0" type="text" class="form-control" name="secondMatNumber" id="secondMatNumber" placeholder="1234" value="{{old('secondMatNumber')}}" style="{{ $errors->has('secondMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
                                     <div :hidden="thirdMatNumberIsVisible == 1" class="input-group-append">
-                                        <button @click="hideSecondMatNumber" class="btn btn-outline-secondary" type="button">X</button>
+                                        <button @click="hideSecondMatNumber" name="secondMatRemoveButton" id="secondMatRemoveButton" class="btn btn-outline-secondary" type="button">X</button>
                                     </div>
                                     <div class="invalid-feedback">
                                         Please provide a mat number.
@@ -138,7 +146,7 @@
                                 <div class="input-group">
                                     <input :disabled="isFrame == 0 || thirdMatNumberIsVisible == 0" type="text" class="form-control" name="thirdMatNumber" id="thirdMatNumber" placeholder="1234" value="{{old('thirdMatNumber')}}" style="{{ $errors->has('thirdMatNumber') ? 'border-color:red' : '' }}" :required="thirdMatNumberIsVisible == 1">
                                     <div class="input-group-append">
-                                        <button @click="hideThirdMatNumber" class="btn btn-outline-secondary" type="button">X</button>
+                                        <button @click="hideThirdMatNumber" name="thirdMatRemoveButton" id="thirdMatRemoveButton" class="btn btn-outline-secondary" type="button">X</button>
                                     </div>
                                     <div class="invalid-feedback">
                                         Please provide a mat number.
@@ -184,6 +192,33 @@
                                 <textarea type="text" class="form-control" name="orderNotes" id="orderNotes" placeholder="Notes">{{old('orderNotes')}}</textarea>
                             </div>
                         </div>
+                        <div class="form-row text-right mb-2">
+                            <label class="col w-50 col-form-label" for="drawingButton">Drawing</label>
+                            <div class="col w-50">
+                                <button type="button" class="btn btn-primary" style="width:100%" name="drawingButton" id="drawingButton">Show Drawing</button>
+                            </div>
+                        </div>
+                        <div :hidden="canvasIsHidden == 1">
+                            <div class="form-row">
+                                <div class="col float-left">
+                                    <button type="button" class="btn btn-primary" name="drawingModeButton" id="drawingModeButton">Enter Drawing Mode</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="pencilButton" id="pencilButton">Pencil</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="eraserButton" id="eraserButton">Eraser</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="textButton" id="textButton">Text</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
+                                </div>
+                            </div>
+                            <canvas id="canvas" class="w-100"></canvas>
+                        </div>
+                        <p></p>
                         <!-- Passing javascript variables to request -->
                         <div hidden>
                             <input type ="text" :value="firstMatPresent" name="firstMatPresent" id="firstMatPresent">
@@ -219,9 +254,21 @@
 </div>
 
 <order-component ref="orderComponent"
+                    :oldfirstmatnumber="{{old('firstMatNumber') == null ? 0 : 1}}"
                     :oldsecondmatnumber="{{old('secondMatNumber') == null ? 0 : 1}}"
                     :oldthirdmatnumber="{{old('thirdMatNumber') == null ? 0 : 1}}"
                     :oldisframe="{{old('isFrame') == null ? 1 : old('isFrame')}}"
+                    :reportnumber="-2"
+                    :price="0"
 ></order-component>
+
+<price-update-component ref="priceUpdateComponent"
+                            :priceupdatetest="0"
+                            :isediting="0"
+></price-update-component>
+
+<create-image-component ref="createImageComponent"
+                            :createimagetest="0"
+></create-image-component>
 
 @endsection

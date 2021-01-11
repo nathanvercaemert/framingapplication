@@ -21,6 +21,9 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->string('paid')->nullable();
+            $table->timestamp('paid_at')->nullable();
+            $table->timestamp('paid_until')->nullable();
         });
     }
 

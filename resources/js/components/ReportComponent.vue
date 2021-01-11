@@ -198,9 +198,9 @@
                     let li = document.createElement('a');
                     li.setAttribute('style', 'text-align:center;');
                     li.className += "list-group-item d-flex align-items-center";
-                    li.setAttribute('value', order);
+                    li.setAttribute('value', order.orderNumber);
                     orderListNode.appendChild(li);
-                    li.innerHTML += order;
+                    li.innerHTML += order.orderNumber;
                 });
             }
         }

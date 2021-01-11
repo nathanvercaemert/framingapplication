@@ -34,7 +34,7 @@
                                 <div class="form-row mb-2">
                                     <div class="col w-50"></div>
                                     <div class="col w-50">
-                                        <li class="list-group-item list-group-item-secondary">Type can not be edited.</li>
+                                        <li class="list-group-item list-group-item-secondary">Type cannot be edited.</li>
                                     </div>
                                 </div>
                             </ul>
@@ -42,8 +42,8 @@
                         <div :hidden="editIsDateRange == 0" class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="editBeginDatepicker">Beginning:</label>
                             <div class="col w-50">
-                                <div class="input-group date" data-provide="datepicker">
-                                    <input type="text" id="editBeginDatepicker" name="editBeginDatepicker" class="form-control">
+                                <div class="input-group date" data-provide="{{$report->isProcessed == 1 ? '' : 'datepicker'}}">
+                                    <input :disabled="{{$report->isProcessed}} == 1" type="text" id="editBeginDatepicker" name="editBeginDatepicker" class="form-control">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
@@ -53,15 +53,15 @@
                         <div :hidden="editIsDateRange == 0" class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="editEndDatepicker">Ending:</label>
                             <div class="col w-50">
-                                <div class="input-group date" data-provide="datepicker">
-                                    <input type="text" id="editEndDatepicker" name="editEndDatepicker" class="form-control">
+                                <div class="input-group date" data-provide="{{$report->isProcessed == 1 ? '' : 'datepicker'}}">
+                                    <input :disabled="{{$report->isProcessed}} == 1"type="text" id="editEndDatepicker" name="editEndDatepicker" class="form-control">
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-calendar"></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div :hidden="editIsDateRange == 0" class="form-row text-right mb-2">
+                        <div :disabled="{{$report->isProcessed}} == 1" :hidden="editIsDateRange == 0" class="form-row text-right mb-2">
                             <label class="col w-50 col-form-label" for="buttonToPopulateDateRangeOrders">To Be Reported:</label>
                             <div class="col w-50 text-left">
                                 <button type="button" class="btn btn-primary" name="buttonToPopulateDateRangeOrders" id="buttonToPopulateDateRangeOrders" v-on:click="populateEditDateRangeOrders" data-toggle="modal" data-target="#editDateRangeOrdersModal" style="width:100%">View Orders</button>
@@ -74,7 +74,7 @@
                                 </div>
                                 <p :hidden="editOrderListCount == 0">
                                 </p>
-                                <button :hidden="editIsSpecificOrders == 0" type="button" class="btn btn-primary" v-on:click="editResetAddOrderModal" data-toggle="modal" data-target="#editAddOrder" style="width:100%">Add Order</button>
+                                <button :disabled="{{$report->isProcessed}} == 1" :hidden="editIsSpecificOrders == 0" type="button" class="btn btn-primary" v-on:click="editResetAddOrderModal" data-toggle="modal" data-target="#editAddOrder" style="width:100%">Add Order</button>
                             </div>
                         </div>
                         <div class="form-row text-right mb-2">
@@ -83,6 +83,7 @@
                                 <textarea type="text" class="form-control" name="editReportNotes" id="editReportNotes" value="{{ old('editReportNotes') != null ? old('editReportNotes') : $report->reportNotes }}">{{ old('editReportNotes') != null ? old('editReportNotes') : $report->reportNotes }}</textarea>
                             </div>
                         </div>
+                        <input hidden type="text" value="{{ old('editEditOrders') != null ? old('editEditOrders') : 'full' }}" name="editEditOrders" id="editEditOrders">
                         <input hidden type="text" name="editUnreportCheckList" id="editUnreportCheckList">
                         <input hidden type="text" name="editSubmitOrderList" id="editSubmitOrderList">
                         <input hidden type="text" name="editIsDateRange" id="editIsDateRange">
@@ -90,6 +91,8 @@
                         <input hidden type="text" :value="{{$report->reportNumber}}" name="editReportNumber" id="editReportNumber">
                         <input hidden type="text" value=-1 name="editDateRangeOrders" id="editDateRangeOrders">
                         <button type="button" id="editSubmitButton" v-on:click="editSubmitFunction" class="btn btn-primary" style="width:100%">Submit Edit</button>
+                        <p></p>
+                        <a class="btn btn-primary text-white" role="button" style="width:100%" data-toggle="modal" data-target="#deleteReport">Delete Report</a>
                     </form>
                     @if ($errors->any())
                         <p></p>
@@ -101,6 +104,12 @@
                             </ul>
                         </div>
                     @endif
+                    <p></p>
+                    <div>
+                        <ul :hidden="{{$report->isProcessed}} == 0" class="list-group">
+                            <li class="list-group-item list-group-item-secondary">Some items cannot be editted because the report has been processed.</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -108,14 +117,17 @@
 </div>
 
 <edit-report-component ref="editReportComponent"
-            :editorders="{{$editOrders}}"
+            :editorders="{{ old('editEditOrders') != null ? old('editEditOrders') : $editOrders}}"
+            :editordersold="{{$editOrders}}"
             isdaterange="{{$report->reportIsDateRange}}"
             isspecificorders="{{$report->reportIsSpecificOrders}}"
             daterangeend="{{ old('editEndDatepicker') != null ? old('editEndDatepicker') : $report->endDate }}"
             daterangebegin="{{ old('editBeginDatepicker') != null ? old('editBeginDatepicker') : $report->beginDate }}"
             reportnumber="{{$report->reportNumber}}"
+            isprocessed="{{$report->isProcessed}}"
 ></edit-report-component>
 
+@include('modals.reports.delete')
 @include('modals.reports.editAddOrder')
 @include('modals.reports.editViewOrder')
 @include('modals.reports.editReportContainsOrdersVerification')

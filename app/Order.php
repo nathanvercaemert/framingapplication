@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\ModelNotFoundException as ModelNotFoundExceptio
 
 use App\Moulding;
 use App\MatModel;
+use App\Glass;
+use App\Foamcore;
 use Illuminate\Validation\Rule;
 
 class Order extends Model
@@ -34,6 +36,12 @@ class Order extends Model
     {
         $user = auth()->user()->id;
         return Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->where('isReported', 0)->get();
+    }
+
+    public static function dateRangeOrdersUpdate($beginDate, $endDate, $reportNumber)
+    {
+        $user = auth()->user()->id;
+        return Order::whereBetween('created_at', [$beginDate, $endDate])->where('user', $user)->where('isReported', 0)->orWhere('user', $user)->whereBetween('created_at', [$beginDate, $endDate])->where('isReported', 1)->where('reportNumber', $reportNumber)->get();
     }
 
     public static function dateRangeOrdersInReport($reportNumber, $beginDate, $endDate)
@@ -113,6 +121,20 @@ class Order extends Model
         $orderIDs = explode(',', $orders);
         \DB::table('orders')->whereIn('id', $orderIDs)->update(array('reportNumber' => -1));
         \DB::table('orders')->whereIn('id', $orderIDs)->update(array('isReported' => 0));
+    }
+
+    public static function completionFunction($id) {
+        $now = now();
+        \DB::statement("
+            UPDATE orders
+                SET isCompleted =
+                    CASE WHEN isCompleted = 0 THEN 1
+                    ELSE 0 END,
+                completed_at =
+                    CASE WHEN isCompleted = 1 THEN '$now'
+                    ELSE null END
+                WHERE id = $id
+        ");
     }
 
     public static function validationArray($isReported, $isFrame, $secondMatNumberIsVisible, $thirdMatNumberIsVisible, $firstMatPresent)
@@ -196,6 +218,56 @@ class Order extends Model
             }
         }
         return $validationCommentsArray;
+    }
+
+    public static function price($height, $width, $mouldingNumber, $firstMat, $secondMat, $thirdMat, $glassType, $foamcoreType) {
+        $perimeterFeet = 2 * ($height + $width) / 12;
+        $areaFeet = ($height / 12) * ($width / 12);
+        $user = auth()->user()->id;
+        $price = 0;
+        if ($mouldingNumber && $mouldingNumber != -1) {
+            $moulding = Moulding::where('user', $user)->where('mouldingNumber', $mouldingNumber)->get();
+            if ($moulding->count() > 0) {
+                $mouldingPrice = $moulding[0]->attributes['mouldingPrice'];
+                $price += $mouldingPrice * $perimeterFeet;
+            }
+        }
+        if ($firstMat && $firstMat != -1) {
+            $mat = MatModel::where('user', $user)->where('matNumber', $firstMat)->get();
+            if ($mat->count() > 0) {
+                $matPrice = $mat[0]->attributes['matPrice'];
+                $price += $matPrice * $areaFeet;
+            }
+        }
+        if ($secondMat && $secondMat != -1) {
+            $mat = MatModel::where('user', $user)->where('matNumber', $secondMat)->get();
+            if ($mat->count() > 0) {
+                $matPrice = $mat[0]->attributes['matPrice'];
+                $price += $matPrice * $areaFeet;
+            }
+        }
+        if ($thirdMat && $thirdMat != -1) {
+            $mat = MatModel::where('user', $user)->where('matNumber', $thirdMat)->get();
+            if ($mat->count() > 0) {
+                $matPrice = $mat[0]->attributes['matPrice'];
+                $price += $matPrice * $areaFeet;
+            }
+        }
+        if ($glassType && $glassType != -1) {
+            $glass = Glass::where('user', $user)->where('glassType', $glassType)->get();
+            if ($glass->count() > 0) {
+                $glassPrice = $glass[0]->attributes['glassPrice'];
+                $price += $glassPrice * $areaFeet;
+            }
+        }
+        if ($foamcoreType && $foamcoreType != -1) {
+            $foamcore = Foamcore::where('user', $user)->where('foamcoreType', $foamcoreType)->get();
+            if ($foamcore->count() > 0) {
+                $foamcorePrice = $foamcore[0]->attributes['foamcorePrice'];
+                $price += $foamcorePrice * $areaFeet;
+            }
+        }
+        return $price;
     }
 
 }

@@ -216,8 +216,8 @@
                                     <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
                                 </div>
                             </div>
-                            <div id="canvasContainer" style="position: relative;">
-                                <canvas id="canvas" style="border: 5px solid #AAA;"></canvas>
+                            <div id="cContainer" style="position: relative;">
+                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh"></canvas>
                             </div>
                         </div>
                         <p></p>

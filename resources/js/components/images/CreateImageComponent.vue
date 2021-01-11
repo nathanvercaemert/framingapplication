@@ -7,64 +7,12 @@
         mounted() {
             this.$root.resetCreateCanvas();
 
-            var canvas = document.getElementById('canvas')
-            let canvasWidth = Math.floor($("#drawingButtonRow").width() - 10) // for padding
-            let canvasHeight = Math.floor(.9 * window.innerHeight)
-            canvas.parentElement.setAttribute('height', canvasHeight)
-            canvas.parentElement.setAttribute('min-height', canvasHeight)
-            canvas.parentElement.setAttribute('width', canvasWidth)
-            canvas.parentElement.setAttribute('min-width', canvasWidth)
-            canvas.parentElement.style.height = Math.floor(canvasHeight).toString() + "px"
-            this.$root.fabricCanvas = new fabric.Canvas('canvas', {  height: canvasHeight, width: canvasWidth,
-                                                                                                    selection : false,
-                                                                                                    controlsAboveOverlay:true,
-                                                                                                    centeredScaling:true,
-                                                                                                    allowTouchScrolling: true,
-                                                                                                    backgroundColor : "#fff"})
-            // canvas.setAttribute('height', .9 * window.innerHeight)
-            // canvas.setAttribute('width', Math.floor($("#drawingButtonRow").width() - 10))
-            // this.$root.fabricCanvas = new fabric.Canvas('canvas', {selection : false,
-            //                                                         controlsAboveOverlay:true,
-            //                                                         centeredScaling:true,
-            //                                                         allowTouchScrolling: true,
-            //                                                         backgroundColor : "#fff"})
-            let fabricCanvas = this.$root.fabricCanvas
-            fabricCanvas.on("after:render", function(){fabricCanvas.calcOffset();});
-            this.$root.fabricCanvas.setDimensions({width: canvasWidth, height: canvasHeight})
-            fabric.Object.prototype.selectable = false;
-            fabric.Object.prototype.transparentCorners = false;
-            this.$root.fabricCanvas.on('selection:created', (e) => {
-                if(e.target.type === 'activeSelection') {
-                    canvas.discardActiveObject();
-                } else {
-                    //do nothing
-                }
-            })
-            var enableScroll = function(){
-                canvas.allowTouchScrolling = true;
-            };
-            this.$root.fabricCanvas.on('mouse:up', enableScroll);
-            var children = canvas.parentElement.childNodes;
-            children.forEach(function(child){
-                let childrenChildren = child.childNodes
-                childrenChildren.forEach(function(childChild){
-                    let childrenChildrenChildren = childChild.childNodes
-                    childrenChildrenChildren.forEach(function(childChildChild){
-                        // childChildChild.setAttribute('height', canvasHeight)
-                        // childChildChild.setAttribute('width', canvasWidth)
-                        childChildChild.style.height = canvasHeight.toString + "px"
-                        childChildChild.style.width = canvasWidth.toString + "px"
-                    })
-                    // childChild.setAttribute('height', canvasHeight)
-                    // childChild.setAttribute('width', canvasWidth)
-                    childChild.style.height = canvasHeight.toString + "px"
-                    childChild.style.width = canvasWidth.toString + "px"
-                })
-                // child.setAttribute('height', canvasHeight)
-                // child.setAttribute('width', canvasWidth)
-                child.style.height = canvasHeight.toString + "px"
-                child.style.width = canvasWidth.toString + "px"
+            var canvas = this.__canvas = new fabric.Canvas('c', {
+                isDrawingMode: true
             });
+            canvas.setHeight(Math.floor(.9 * window.innerHeight))
+            canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10))
+            fabric.Object.prototype.transparentCorners = false;
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)
@@ -78,13 +26,6 @@
             textButton.addEventListener("click", this.textButton)
             let undoButton = document.getElementById('undoButton')
             undoButton.addEventListener("click", this.undoButton)
-
-            // this.$root.fabricCanvas.setWidth(window.innerWidth)
-            // this.$root.fabricCanvas.setHeight(.9 * window.innerHeight)
-
-            // var canvasContainer = document.getElementById('canvasContainer')
-            // var canvas = document.getElementById('canvas')
-            // var context = canvas.getContext('2d');
         },
         methods: {
             testFunction: function testFunction() {
@@ -97,19 +38,13 @@
                     drawingButton.innerHTML = "Show Drawing"
                 } else {
                     // canvas.height = window.innerHeight
-                    drawingButton.innerHTML = "Hide Drawing"
+                    fabric.Object.prototype.transparentCorners = false;
                 }
             },
             drawingModeButton: function drawingModeButton() {
-                var fabricCanvas = this.$root.fabricCanvas
                 let drawingModeButton = document.getElementById('drawingModeButton')
-
-                fabricCanvas.isDrawingMode = !fabricCanvas.isDrawingMode
-                this.$root.isDrawingMode = fabricCanvas.isDrawingMode
-                if (fabricCanvas.isDrawingMode) {
-                    fabricCanvas.freeDrawingBrush.color = "black";
-                    fabricCanvas.freeDrawingBrush.width = "3";
-                    fabricCanvas.renderAll();
+                this.$root.isDrawingMode = !this.$root.isDrawingMode
+                if (this.$root.isDrawingMode) {
                     drawingModeButton.innerHTML = 'Save';
                 }
                 else {
@@ -117,16 +52,8 @@
                 }
             },
             pencilButton: function pencilButton() {
-                let fabricCanvas = this.$root.fabricCanvas
-                fabricCanvas.freeDrawingBrush.color = "black";
-                fabricCanvas.freeDrawingBrush.width = "3";
-                fabricCanvas.renderAll();
             },
             eraserButton: function eraserButton() {
-                let fabricCanvas = this.$root.fabricCanvas
-                fabricCanvas.freeDrawingBrush.color = "white";
-                fabricCanvas.freeDrawingBrush.width = "10";
-                fabricCanvas.renderAll();
 
             },
             textButton: function textButton() {

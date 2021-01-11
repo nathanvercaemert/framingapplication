@@ -2609,35 +2609,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['createimagetest'],
   mounted: function mounted() {
     this.$root.resetCreateCanvas();
-    var canvas = document.getElementById('canvas');
-    var canvasWidth = Math.floor($("#drawingButtonRow").width() - 10); // for padding
+    var canvas = document.getElementById('canvas'); // let canvasWidth = Math.floor($("#drawingButtonRow").width() - 10) // for padding
+    // let canvasHeight = Math.floor(.9 * window.innerHeight)
+    // canvas.parentElement.setAttribute('height', canvasHeight)
+    // canvas.parentElement.setAttribute('min-height', canvasHeight)
+    // canvas.parentElement.setAttribute('width', canvasWidth)
+    // canvas.parentElement.setAttribute('min-width', canvasWidth)
+    // canvas.parentElement.style.height = Math.floor(canvasHeight).toString() + "px"
+    // this.$root.fabricCanvas = new fabric.Canvas('canvas', {  height: canvasHeight, width: canvasWidth,
+    //                                                                                         selection : false,
+    //                                                                                         controlsAboveOverlay:true,
+    //                                                                                         centeredScaling:true,
+    //                                                                                         allowTouchScrolling: true,
+    //                                                                                         backgroundColor : "#fff"})
 
-    var canvasHeight = Math.floor(.9 * window.innerHeight);
-    canvas.parentElement.setAttribute('height', canvasHeight);
-    canvas.parentElement.setAttribute('min-height', canvasHeight);
-    canvas.parentElement.style.height = Math.floor(canvasHeight).toString() + "px";
+    canvas.setAttribute('height', .9 * window.innerHeight);
+    canvas.setAttribute('width', Math.floor($("#drawingButtonRow").width() - 10));
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
-      height: canvasHeight,
-      width: canvasWidth,
       selection: false,
       controlsAboveOverlay: true,
       centeredScaling: true,
-      allowTouchScrolling: true
+      allowTouchScrolling: true,
+      backgroundColor: "#fff"
     });
-    this.$root.fabricCanvas.setDimensions({
-      width: canvasWidth,
-      height: canvasHeight
-    });
+    var fabricCanvas = this.$root.fabricCanvas; // fabricCanvas.on("after:render", function(){fabricCanvas.calcOffset();});
+    // this.$root.fabricCanvas.setDimensions({width: canvasWidth, height: canvasHeight})
+
     fabric.Object.prototype.selectable = false;
+    fabric.Object.prototype.transparentCorners = false;
     this.$root.fabricCanvas.on('selection:created', function (e) {
       if (e.target.type === 'activeSelection') {
         canvas.discardActiveObject();
@@ -2650,27 +2653,27 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     this.$root.fabricCanvas.on('mouse:up', enableScroll);
-    var children = canvas.parentElement.childNodes;
-    children.forEach(function (child) {
-      var childrenChildren = child.childNodes;
-      childrenChildren.forEach(function (childChild) {
-        var childrenChildrenChildren = childChild.childNodes;
-        childrenChildrenChildren.forEach(function (childChildChild) {
-          // childChildChild.setAttribute('height', canvasHeight)
-          // childChildChild.setAttribute('width', canvasWidth)
-          childChildChild.style.height = canvasHeight.toString + "px";
-          childChildChild.style.width = canvasWidth.toString + "px";
-        }); // childChild.setAttribute('height', canvasHeight)
-        // childChild.setAttribute('width', canvasWidth)
+    var children = canvas.parentElement.childNodes; // children.forEach(function(child){
+    //     let childrenChildren = child.childNodes
+    //     childrenChildren.forEach(function(childChild){
+    //         let childrenChildrenChildren = childChild.childNodes
+    //         childrenChildrenChildren.forEach(function(childChildChild){
+    //             // childChildChild.setAttribute('height', canvasHeight)
+    //             // childChildChild.setAttribute('width', canvasWidth)
+    //             childChildChild.style.height = canvasHeight.toString + "px"
+    //             childChildChild.style.width = canvasWidth.toString + "px"
+    //         })
+    //         // childChild.setAttribute('height', canvasHeight)
+    //         // childChild.setAttribute('width', canvasWidth)
+    //         childChild.style.height = canvasHeight.toString + "px"
+    //         childChild.style.width = canvasWidth.toString + "px"
+    //     })
+    //     // child.setAttribute('height', canvasHeight)
+    //     // child.setAttribute('width', canvasWidth)
+    //     child.style.height = canvasHeight.toString + "px"
+    //     child.style.width = canvasWidth.toString + "px"
+    // });
 
-        childChild.style.height = canvasHeight.toString + "px";
-        childChild.style.width = canvasWidth.toString + "px";
-      }); // child.setAttribute('height', canvasHeight)
-      // child.setAttribute('width', canvasWidth)
-
-      child.style.height = canvasHeight.toString + "px";
-      child.style.width = canvasWidth.toString + "px";
-    });
     var drawingButton = document.getElementById('drawingButton');
     drawingButton.addEventListener("click", this.showHideCanvas);
     var drawingModeButton = document.getElementById('drawingModeButton');
@@ -2684,9 +2687,7 @@ __webpack_require__.r(__webpack_exports__);
     var undoButton = document.getElementById('undoButton');
     undoButton.addEventListener("click", this.undoButton); // this.$root.fabricCanvas.setWidth(window.innerWidth)
     // this.$root.fabricCanvas.setHeight(.9 * window.innerHeight)
-
-    canvas.style.border = '5px solid #AAA';
-    canvas.style.margin = '0px'; // var canvasContainer = document.getElementById('canvasContainer')
+    // var canvasContainer = document.getElementById('canvasContainer')
     // var canvas = document.getElementById('canvas')
     // var context = canvas.getContext('2d');
   },
@@ -2712,8 +2713,8 @@ __webpack_require__.r(__webpack_exports__);
       this.$root.isDrawingMode = fabricCanvas.isDrawingMode;
 
       if (fabricCanvas.isDrawingMode) {
-        fabricCanvas.freeDrawingBrush.color = "purple";
-        fabricCanvas.freeDrawingBrush.width = 10;
+        fabricCanvas.freeDrawingBrush.color = "black";
+        fabricCanvas.freeDrawingBrush.width = "3";
         fabricCanvas.renderAll();
         drawingModeButton.innerHTML = 'Save';
       } else {
@@ -2722,8 +2723,16 @@ __webpack_require__.r(__webpack_exports__);
     },
     pencilButton: function pencilButton() {
       var fabricCanvas = this.$root.fabricCanvas;
+      fabricCanvas.freeDrawingBrush.color = "black";
+      fabricCanvas.freeDrawingBrush.width = "3";
+      fabricCanvas.renderAll();
     },
-    eraserButton: function eraserButton() {},
+    eraserButton: function eraserButton() {
+      var fabricCanvas = this.$root.fabricCanvas;
+      fabricCanvas.freeDrawingBrush.color = "white";
+      fabricCanvas.freeDrawingBrush.width = "10";
+      fabricCanvas.renderAll();
+    },
     textButton: function textButton() {},
     undoButton: function undoButton() {}
   }
@@ -70904,8 +70913,14 @@ render._withStripped = true
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {}
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
 var staticRenderFns = []
+render._withStripped = true
 
 
 

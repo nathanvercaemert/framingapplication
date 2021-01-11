@@ -2622,6 +2622,7 @@ __webpack_require__.r(__webpack_exports__);
     var canvasWidth = $("#drawingButtonRow").width() - 10; // for padding
 
     var canvasHeight = .9 * window.innerHeight;
+    canvas.parentElement.setAttribute('height', canvasHeight);
     this.$root.fabricCanvas = new fabric.Canvas('canvas', {
       height: canvasHeight,
       width: canvasWidth,

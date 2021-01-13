@@ -26,6 +26,7 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
-        "fabric": "^4.3.0"
+        "fabric": "^4.3.0",
+        "lz-string": "^1.4.4"
     }
 }

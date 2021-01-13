@@ -10,6 +10,7 @@ use App\Glass;
 use App\Foamcore;
 use App\MatModel;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class OrdersController extends Controller
 {
@@ -77,6 +78,12 @@ class OrdersController extends Controller
 
     public function update($id)
     {
+        $orderNumber = request('orderNumber');
+        $user = auth()->user()->id;
+        $canvasJSON = request('canvasJSON');
+        $fileName = strval($user) . '_' . strval($orderNumber) . '.json';
+        Storage::disk('public')->put($fileName, strval($canvasJSON));
+
         $validationArray = Order::validationArray(request()->isReported, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, request()->firstMatPresent);
         $validationCommentsArray = Order::validationCommentsArray(request()->isReported, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, request()->firstMatPresent);
         request()->validate($validationArray, $validationCommentsArray);
@@ -132,6 +139,12 @@ class OrdersController extends Controller
 
     public function store()
     {
+        $orderNumber = request('orderNumber');
+        $user = auth()->user()->id;
+        $canvasJSON = request('canvasJSON');
+        $fileName = strval($user) . '_' . strval($orderNumber) . '.json';
+        Storage::disk('public')->put($fileName, strval($canvasJSON));
+
         $processFirstMat = request('firstMatNumber') != null;
         $validationArray = Order::validationArray(0, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, $processFirstMat, request()->firstMatPresent);
         $validationCommentsArray = Order::validationCommentsArray(0, request()->isFrame, request()->secondMatNumberIsVisible, request()->thirdMatNumberIsVisible, $processFirstMat, request()->firstMatPresent);
@@ -140,8 +153,8 @@ class OrdersController extends Controller
         $order = new Order();
         $order->isReported = 0;
         $order->reportNumber = -1;
-        $order->user = auth()->user()->id;
-        $order->orderNumber = request('orderNumber');
+        $order->user = $user;
+        $order->orderNumber = $orderNumber;
         $order->customerFirst = request('customerFirst');
         $order->customerLast = request('customerLast');
         $order->customerEmail = request('customerEmail');
@@ -210,6 +223,13 @@ class OrdersController extends Controller
         $width = request('orderWidth');
         $height = request('orderHeight');
         return Order::price($height, $width, $mouldingNumber, $firstMat, $secondMat, $thirdMat, $glass, $foamcore);
+    }
+
+    public function image() {
+        $orderNumber = request('orderNumber');
+        $user = auth()->user()->id;
+        $fileName = strval($user) . '_' . strval($orderNumber) . '.json';
+        return Storage::disk('public')->get($fileName);
     }
 
 }

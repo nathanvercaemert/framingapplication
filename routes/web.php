@@ -95,6 +95,9 @@ Route::patch('/orders/complete/{id}', 'OrdersController@complete');
 //price updating ajax
 Route::get('/orders/price', 'OrdersController@price');
 
+//get the json
+Route::get('/image', 'OrdersController@image');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

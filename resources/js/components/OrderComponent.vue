@@ -19,6 +19,13 @@
             }
         },
         methods: {
+            firstMatChange: function firstMatChange() {
+                if (document.querySelector('#firstMatNumber').value == '') {
+                    this.$root.removeFirstMat()
+                } else {
+                    this.$root.firstMatPresent = 1
+                }
+            },
             removeFirstMat: function removeFirstMat() {
                 document.querySelector('#firstMatNumber').value = null;
             },

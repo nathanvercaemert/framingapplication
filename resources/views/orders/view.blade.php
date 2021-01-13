@@ -9,6 +9,7 @@
                     <form method="POST" action="/orders/complete/{{ $order->id }}" name="completeOrderForm" id="completeOrderForm">
                         {{ method_field('PATCH') }}
                         {{ csrf_field() }}
+                        <div hidden id="orderNumber" value="{{$order->orderNumber}}"></div>
                         <div class="row">
                             <div class="col w-33 text-left">
                                 Order: {{$order->orderNumber}}
@@ -150,6 +151,21 @@
                                 <a>{{$order->orderNotes}}</a>
                             </div>
                         </div>
+                        <div class="row" id="viewDrawingButtonRow">
+                            <div class="col w-50 text-right">
+                                <h5>Drawing:</h5>
+                            </div>
+                            <div class="col w-50">
+                                <button type="button" class="btn btn-primary" style="width:100%" name="viewDrawingButton" id="viewDrawingButton">Show Drawing</button>
+                            </div>
+                        </div>
+                        <div :hidden="canvasIsHidden == 1">
+                            <p></p>
+                            <div id="cContainer" style="position: relative;">
+                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh"></canvas>
+                            </div>
+                        </div>
+                        <p></p>
                         <p>
                             <button type="button" id="completionButton" v-on:click="completionFunction" class="btn btn-primary text-white" role="button" style="width:100%">{{$order->isCompleted ? 'Undo Completion' : 'Complete Order'}}</button>
                         </p>
@@ -173,6 +189,9 @@
                     :reportnumber="{{$order->reportNumber}}"
                     :price="{{$order->orderPrice}}"
 ></order-component>
+
+<view-image-component ref="viewImageComponent"
+></view-image-component>
 
 @include('modals.orders.completionError')
 

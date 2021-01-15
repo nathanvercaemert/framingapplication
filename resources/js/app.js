@@ -36,6 +36,7 @@ Vue.component('edit-order-fix-component', require('./components/EditOrderFixComp
 
 //fabric components
 Vue.component('create-image-component', require('./components/images/CreateImageComponent.vue').default);
+Vue.component('view-image-component', require('./components/images/ViewImageComponent.vue').default);
 
 
 /**
@@ -50,7 +51,10 @@ import ReportEditMixin from './reportEdit.js';
 import PriceUpdateMixin from './price_updates/priceUpdate.js';
 
 import CreateImageMixin from './images/createImage.js';
+import ViewImageMixin from './images/viewImage.js';
+
 import Axios from "axios";
+
 import { fabric } from 'fabric'
 
 let data = {
@@ -71,7 +75,7 @@ let data = {
 };
 
 const app = new Vue({
-    mixins: [ReportMixin, ReportViewMixin, ReportEditMixin, PriceUpdateMixin, CreateImageMixin],
+    mixins: [ReportMixin, ReportViewMixin, ReportEditMixin, PriceUpdateMixin, CreateImageMixin, ViewImageMixin],
 
     el: '#app',
 
@@ -148,8 +152,8 @@ const app = new Vue({
                 this.$refs.editPriceUpdateComponent.editPriceUpdate();
             }
         },
-        addFirstMat() {
-            this.firstMatPresent = 1;
+        firstMatChange() {
+            this.$refs.orderComponent.firstMatChange()
         },
         testFunction() {
             console.log("test");

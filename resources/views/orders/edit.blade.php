@@ -105,7 +105,7 @@
                             <label class="col w-50 col-form-label" for="firstMatNumber">Mat Number</label>
                             <div class="col w-50">
                                 <div class="input-group">
-                                    <input :disabled="isFrame == 0 || {{$order->isReported}} == 1" type="text" class="form-control" name="firstMatNumber" id="firstMatNumber" placeholder="1234" value="{{old('firstMatNumber') != null ? old('firstMatNumber') : ($order->orderFirstMatNumber == -1 ? '' : $order->orderFirstMatNumber)}}" style="{{ $errors->has('firstMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
+                                    <input @change="firstMatChange" :disabled="isFrame == 0 || {{$order->isReported}} == 1" type="text" class="form-control" name="firstMatNumber" id="firstMatNumber" placeholder="1234" value="{{old('firstMatNumber') != null ? old('firstMatNumber') : ($order->orderFirstMatNumber == -1 ? '' : $order->orderFirstMatNumber)}}" style="{{ $errors->has('firstMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
                                     <div :hidden="secondMatNumberIsVisible == 1" class="input-group-append">
                                         <button @click="removeFirstMat" class="btn btn-outline-secondary" type="button">X</button>
                                     </div>
@@ -193,11 +193,42 @@
                             <label class="col w-50 col-form-label" for="orderNotes">Notes</label>
                             <div class="col w-50">
                                 <textarea type="text" class="form-control" name="orderNotes" id="orderNotes" value="{{ old('orderNotes') != null ? old('orderNotes') : $order->orderNotes }}">{{ old('orderNotes') != null ? old('orderNotes') : $order->orderNotes }}</textarea>
-                                <div class="invalid-feedback">
-                                    Please provide a height.
+                            </div>
+                        </div>
+                        <div class="form-row text-right mb-2" id="drawingButtonRow">
+                            <label class="col w-50 col-form-label" for="drawingButton">Drawing</label>
+                            <div class="col w-50">
+                                <button type="button" class="btn btn-primary" style="width:100%" name="drawingButton" id="drawingButton">Show Drawing</button>
+                            </div>
+                        </div>
+                        <div :hidden="canvasIsHidden == 1">
+                            <div class="form-row">
+                                <div class="col float-left">
+                                    <button type="button" class="btn btn-primary" name="drawingModeButton" id="drawingModeButton">Enter Drawing Mode</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 1" class="col input-group float-right">
+                                    <div class="input-group-prepend">
+                                        <button class="btn btn-primary" type="button" id="textButton" >Add Text</button>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Input Text" id="canvasInputText" onkeydown="return event.key != 'Enter';">
+                                </div>
+                            </div>
+                            <div id="cContainer" style="position: relative;">
+                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh" @change="updateCanvasJSON"></canvas>
+                            </div>
+                            <div class="form-row" >
+                                <div :hidden="isDrawingMode == 0" class="col float-left">
+                                    <button type="button" class="btn btn-primary col float-right" name="eraserButton" id="eraserButton">Eraser</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-left">
+                                    <button type="button" class="btn btn-primary col float-right" name="pencilButton" id="pencilButton">Pencil</button>
+                                </div>
+                                <div :hidden="isDrawingMode == 0" class="col float-right">
+                                    <button type="button" class="btn btn-primary col float-right" name="undoButton" id="undoButton">Undo</button>
                                 </div>
                             </div>
                         </div>
+                        <p></p>
                         <!-- Passing javascript variables (and other variables) to request -->
                         <div hidden>
                             <input type ="text" :value="firstMatPresent" name="firstMatPresent" id="firstMatPresent">
@@ -216,6 +247,9 @@
                         </div>
                         <div hidden>
                             <input type ="text" :value="{{$order->isReported}}" name="isReported" id="isReported">
+                        </div>
+                        <div hidden>
+                            <input type ="text" :value="canvasJSON" name="canvasJSON" id="canvasJSON">
                         </div>
                         <p>
                             <button type="submit" class="btn btn-primary" style="width:100%">Submit Edit</button>
@@ -265,5 +299,11 @@
                             :secondmatnumberisvisible="{{old('secondMatNumberIsVisible') != null ? old('secondMatNumberIsVisible') : ($order->orderSecondMatNumber == -1 ? 0 : 1)}}"
                             :thirdmatnumberisvisible="{{old('thirdMatNumberIsVisible') != null ? old('thirdMatNumberIsVisible') : ($order->orderThirdMatNumber == -1 ? 0 : 1)}}"
 ></edit-order-fix-component>
+
+<create-image-component ref="createImageComponent"
+                            :createimagetest="0"
+                            :isold="{{old('orderNumber') != null ? 1 : 0}}"
+                            :isediting="1"
+></create-image-component>
 
 @endsection

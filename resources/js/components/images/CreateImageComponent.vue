@@ -3,17 +3,27 @@
 
 <script>
     export default {
-        props: ['createimagetest',],
+        props: ['createimagetest', 'isold', 'isediting'],
         mounted() {
-            this.$root.resetCreateCanvas();
+            this.$root.resetCanvas();
 
             let canvas = this.__canvas = new fabric.Canvas('c', {
                 isDrawingMode: false,
             });
-            canvas.setHeight(Math.floor(.8 * window.innerHeight))
-            canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10))
+            if (this.isold || this.isediting) {
+                this.getCanvasJSON()
+            } else {
+                canvas.setHeight(Math.floor(.8 * window.innerHeight))
+                canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10))
+            }
             fabric.Object.prototype.transparentCorners = false;
             fabric.Object.prototype.selectable = false;
+            canvas.on('object:added', function(event) {
+                this.updateCanvasJSON()
+            }.bind(this))
+            canvas.on('object:modified', function(event) {
+                this.updateCanvasJSON()
+            }.bind(this));
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)
@@ -29,6 +39,24 @@
             undoButton.addEventListener("click", this.undoButton)
         },
         methods: {
+            getCanvasJSON: function getCanvasJSON() {
+                this.$root.getCanvasJSON(document.getElementById('orderNumber').value);
+            },
+            getCanvasJSONCallback: function getCanvasJSONCallback(response) {
+                let fabricCanvas = this.__canvas
+                let json = response.data
+                fabricCanvas.width = json.width
+                fabricCanvas.height = json.height
+                fabricCanvas.setHeight(fabricCanvas.getHeight())
+                fabricCanvas.setWidth(fabricCanvas.getWidth())
+                fabricCanvas.loadFromJSON(json, function() {
+                    fabricCanvas.renderAll()
+                }.bind(this));
+            },
+            updateCanvasJSON: function updateCanvasJSON() {
+                let fabricCanvas = this.__canvas
+                this.$root.canvasJSON = JSON.stringify(fabricCanvas.toJSON(['width', 'height']))
+            },
             testFunction: function testFunction() {
                 console.log('test')
             },
@@ -66,7 +94,7 @@
                 let fabricCanvas = this.__canvas
                 fabricCanvas.isDrawingMode = true
                 fabricCanvas.freeDrawingBrush.color = 'white'
-                fabricCanvas.freeDrawingBrush.width = 50
+                fabricCanvas.freeDrawingBrush.width = 10
             },
             textButton: function textButton() {
                 let text = null
@@ -91,6 +119,7 @@
                     fabricCanvas.remove(item);
                     fabricCanvas.renderAll();
                 }
+                this.updateCanvasJSON();
             },
         }
     }

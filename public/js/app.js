@@ -2283,6 +2283,13 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    firstMatChange: function firstMatChange() {
+      if (document.querySelector('#firstMatNumber').value == '') {
+        this.$root.removeFirstMat();
+      } else {
+        this.$root.firstMatPresent = 1;
+      }
+    },
     removeFirstMat: function removeFirstMat() {
       document.querySelector('#firstMatNumber').value = null;
     },
@@ -2610,16 +2617,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['createimagetest'],
+  props: ['createimagetest', 'isold', 'isediting'],
   mounted: function mounted() {
-    this.$root.resetCreateCanvas();
+    this.$root.resetCanvas();
     var canvas = this.__canvas = new fabric.Canvas('c', {
       isDrawingMode: false
     });
-    canvas.setHeight(Math.floor(.8 * window.innerHeight));
-    canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10));
+
+    if (this.isold || this.isediting) {
+      this.getCanvasJSON();
+    } else {
+      canvas.setHeight(Math.floor(.8 * window.innerHeight));
+      canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10));
+    }
+
     fabric.Object.prototype.transparentCorners = false;
     fabric.Object.prototype.selectable = false;
+    canvas.on('object:added', function (event) {
+      this.updateCanvasJSON();
+    }.bind(this));
+    canvas.on('object:modified', function (event) {
+      this.updateCanvasJSON();
+    }.bind(this));
     var drawingButton = document.getElementById('drawingButton');
     drawingButton.addEventListener("click", this.showHideCanvas);
     var drawingModeButton = document.getElementById('drawingModeButton');
@@ -2634,6 +2653,24 @@ __webpack_require__.r(__webpack_exports__);
     undoButton.addEventListener("click", this.undoButton);
   },
   methods: {
+    getCanvasJSON: function getCanvasJSON() {
+      this.$root.getCanvasJSON(document.getElementById('orderNumber').value);
+    },
+    getCanvasJSONCallback: function getCanvasJSONCallback(response) {
+      var fabricCanvas = this.__canvas;
+      var json = response.data;
+      fabricCanvas.width = json.width;
+      fabricCanvas.height = json.height;
+      fabricCanvas.setHeight(fabricCanvas.getHeight());
+      fabricCanvas.setWidth(fabricCanvas.getWidth());
+      fabricCanvas.loadFromJSON(json, function () {
+        fabricCanvas.renderAll();
+      }.bind(this));
+    },
+    updateCanvasJSON: function updateCanvasJSON() {
+      var fabricCanvas = this.__canvas;
+      this.$root.canvasJSON = JSON.stringify(fabricCanvas.toJSON(['width', 'height']));
+    },
     testFunction: function testFunction() {
       console.log('test');
     },
@@ -2672,7 +2709,7 @@ __webpack_require__.r(__webpack_exports__);
       var fabricCanvas = this.__canvas;
       fabricCanvas.isDrawingMode = true;
       fabricCanvas.freeDrawingBrush.color = 'white';
-      fabricCanvas.freeDrawingBrush.width = 50;
+      fabricCanvas.freeDrawingBrush.width = 10;
     },
     textButton: function textButton() {
       var text = null;
@@ -2698,6 +2735,63 @@ __webpack_require__.r(__webpack_exports__);
       if (item.get('type') === 'path') {
         fabricCanvas.remove(item);
         fabricCanvas.renderAll();
+      }
+
+      this.updateCanvasJSON();
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: [],
+  mounted: function mounted() {
+    this.$root.resetCanvas();
+    var canvas = this.__canvas = new fabric.Canvas('c', {
+      isDrawingMode: false
+    });
+    this.viewGetCanvasJSON();
+    fabric.Object.prototype.transparentCorners = false;
+    fabric.Object.prototype.selectable = false;
+    var viewDrawingButton = document.getElementById('viewDrawingButton');
+    viewDrawingButton.addEventListener("click", this.viewShowHideCanvas);
+  },
+  methods: {
+    viewGetCanvasJSON: function viewGetCanvasJSON() {
+      this.$root.viewGetCanvasJSON(document.getElementById('orderNumber').getAttribute('value'));
+    },
+    viewGetCanvasJSONCallback: function viewGetCanvasJSONCallback(response) {
+      var fabricCanvas = this.__canvas;
+      var json = response.data;
+      fabricCanvas.width = json.width;
+      fabricCanvas.height = json.height;
+      fabricCanvas.setHeight(fabricCanvas.getHeight());
+      fabricCanvas.setWidth(fabricCanvas.getWidth());
+      fabricCanvas.loadFromJSON(json, function () {
+        fabricCanvas.renderAll();
+      }.bind(this));
+    },
+    viewShowHideCanvas: function viewShowHideCanvas() {
+      this.$root.canvasIsHidden = (this.$root.canvasIsHidden + 1) % 2;
+      var viewDrawingButton = document.getElementById('viewDrawingButton');
+
+      if (this.$root.canvasIsHidden) {
+        viewDrawingButton.innerHTML = "Show Drawing";
+      } else {
+        viewDrawingButton.innerHTML = "Hide Drawing";
       }
     }
   }
@@ -70891,6 +70985,30 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a&":
+/*!****************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a& ***!
+  \****************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/price_updates/EditPriceUpdateComponent.vue?vue&type=template&id=5507b6db&":
 /*!*****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/price_updates/EditPriceUpdateComponent.vue?vue&type=template&id=5507b6db& ***!
@@ -83115,10 +83233,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _reportEdit_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./reportEdit.js */ "./resources/js/reportEdit.js");
 /* harmony import */ var _price_updates_priceUpdate_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./price_updates/priceUpdate.js */ "./resources/js/price_updates/priceUpdate.js");
 /* harmony import */ var _images_createImage_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./images/createImage.js */ "./resources/js/images/createImage.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var fabric__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! fabric */ "./node_modules/fabric/dist/fabric.js");
-/* harmony import */ var fabric__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(fabric__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _images_viewImage_js__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./images/viewImage.js */ "./resources/js/images/viewImage.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var fabric__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! fabric */ "./node_modules/fabric/dist/fabric.js");
+/* harmony import */ var fabric__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(fabric__WEBPACK_IMPORTED_MODULE_7__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -83152,11 +83271,13 @@ Vue.component('edit-price-update-component', __webpack_require__(/*! ./component
 Vue.component('edit-order-fix-component', __webpack_require__(/*! ./components/EditOrderFixComponent.vue */ "./resources/js/components/EditOrderFixComponent.vue")["default"]); //fabric components
 
 Vue.component('create-image-component', __webpack_require__(/*! ./components/images/CreateImageComponent.vue */ "./resources/js/components/images/CreateImageComponent.vue")["default"]);
+Vue.component('view-image-component', __webpack_require__(/*! ./components/images/ViewImageComponent.vue */ "./resources/js/components/images/ViewImageComponent.vue")["default"]);
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
 
 
 
@@ -83181,14 +83302,14 @@ var data = {
   reportViewId: null
 };
 var app = new Vue({
-  mixins: [_reports_js__WEBPACK_IMPORTED_MODULE_0__["default"], _reportView_js__WEBPACK_IMPORTED_MODULE_1__["default"], _reportEdit_js__WEBPACK_IMPORTED_MODULE_2__["default"], _price_updates_priceUpdate_js__WEBPACK_IMPORTED_MODULE_3__["default"], _images_createImage_js__WEBPACK_IMPORTED_MODULE_4__["default"]],
+  mixins: [_reports_js__WEBPACK_IMPORTED_MODULE_0__["default"], _reportView_js__WEBPACK_IMPORTED_MODULE_1__["default"], _reportEdit_js__WEBPACK_IMPORTED_MODULE_2__["default"], _price_updates_priceUpdate_js__WEBPACK_IMPORTED_MODULE_3__["default"], _images_createImage_js__WEBPACK_IMPORTED_MODULE_4__["default"], _images_viewImage_js__WEBPACK_IMPORTED_MODULE_5__["default"]],
   el: '#app',
   data: data,
   methods: {
     populateReportViewButton: function populateReportViewButton() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_5___default.a.get('/reports/getbynumber', {
+      axios__WEBPACK_IMPORTED_MODULE_6___default.a.get('/reports/getbynumber', {
         params: {
           reportNumber: this.reportNumber
         }
@@ -83263,8 +83384,8 @@ var app = new Vue({
         this.$refs.editPriceUpdateComponent.editPriceUpdate();
       }
     },
-    addFirstMat: function addFirstMat() {
-      this.firstMatPresent = 1;
+    firstMatChange: function firstMatChange() {
+      this.$refs.orderComponent.firstMatChange();
     },
     testFunction: function testFunction() {
       console.log("test");
@@ -83802,6 +83923,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/images/ViewImageComponent.vue":
+/*!***************************************************************!*\
+  !*** ./resources/js/components/images/ViewImageComponent.vue ***!
+  \***************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ViewImageComponent.vue?vue&type=template&id=9f6fb37a& */ "./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a&");
+/* harmony import */ var _ViewImageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ViewImageComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _ViewImageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/images/ViewImageComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js& ***!
+  \****************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewImageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewImageComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/images/ViewImageComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewImageComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a&":
+/*!**********************************************************************************************!*\
+  !*** ./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a& ***!
+  \**********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./ViewImageComponent.vue?vue&type=template&id=9f6fb37a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/images/ViewImageComponent.vue?vue&type=template&id=9f6fb37a&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ViewImageComponent_vue_vue_type_template_id_9f6fb37a___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/price_updates/EditPriceUpdateComponent.vue":
 /*!****************************************************************************!*\
   !*** ./resources/js/components/price_updates/EditPriceUpdateComponent.vue ***!
@@ -83955,6 +84145,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: {
     createImageTestVariable: null,
+    canvasJSON: null,
     canvasIsHidden: 1,
     isDrawingMode: 0,
     fabricCanvas: null
@@ -83963,10 +84154,56 @@ __webpack_require__.r(__webpack_exports__);
     createImageTest: function createImageTest() {
       console.log("test");
     },
-    resetCreateCanvas: function resetCreateCanvas() {
+    resetCanvas: function resetCanvas() {
+      this.canvasJSON = null;
       this.canvasIsHidden = 1;
       this.isDrawingMode = 0;
       this.fabricCanvas = null;
+    },
+    updateCanvasJSON: function updateCanvasJSON() {
+      this.$refs.createImageComponent.updateCanvasJSON();
+    },
+    getCanvasJSON: function getCanvasJSON(orderNumber) {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/image', {
+        params: {
+          orderNumber: orderNumber
+        }
+      }).then(function (response) {
+        return _this.$refs.createImageComponent.getCanvasJSONCallback(response);
+      });
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/images/viewImage.js":
+/*!******************************************!*\
+  !*** ./resources/js/images/viewImage.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: {},
+  methods: {
+    viewGetCanvasJSON: function viewGetCanvasJSON(orderNumber) {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/image', {
+        params: {
+          orderNumber: orderNumber
+        }
+      }).then(function (response) {
+        return _this.$refs.viewImageComponent.viewGetCanvasJSONCallback(response);
+      });
     }
   }
 });

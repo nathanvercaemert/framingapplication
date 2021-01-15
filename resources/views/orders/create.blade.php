@@ -102,7 +102,7 @@
                             <label class="col w-50 col-form-label" for="firstMatNumber">Mat Number</label>
                             <div class="col w-50">
                                 <div class="input-group">
-                                    <input :disabled="isFrame == 0" @change="addFirstMat" type="text" class="form-control" name="firstMatNumber" id="firstMatNumber" placeholder="1234" value="{{old('firstMatNumber')}}" style="{{ $errors->has('firstMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
+                                    <input :disabled="isFrame == 0" @change="firstMatChange" type="text" class="form-control" name="firstMatNumber" id="firstMatNumber" placeholder="1234" value="{{old('firstMatNumber')}}" style="{{ $errors->has('firstMatNumber') ? 'border-color:red' : '' }}" :required="secondMatNumberIsVisible == 1">
                                     <div :hidden="secondMatNumberIsVisible == 1" class="input-group-append">
                                         <button @click="removeFirstMat" name="firstMatRemoveButton" id="firstMatRemoveButton" class="btn btn-outline-secondary" type="button">X</button>
                                     </div>
@@ -205,13 +205,13 @@
                                 </div>
                                 <div :hidden="isDrawingMode == 1" class="col input-group float-right">
                                     <div class="input-group-prepend">
-                                        <button class="btn btn-primary" type="button" id="textButton">Add Text</button>
+                                        <button class="btn btn-primary" type="button" id="textButton" >Add Text</button>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Input Text" id="canvasInputText">
+                                    <input type="text" class="form-control" placeholder="Input Text" id="canvasInputText" onkeydown="return event.key != 'Enter';">
                                 </div>
                             </div>
                             <div id="cContainer" style="position: relative;">
-                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh"></canvas>
+                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh" @change="updateCanvasJSON"></canvas>
                             </div>
                             <div class="form-row" >
                                 <div :hidden="isDrawingMode == 0" class="col float-left">
@@ -241,6 +241,9 @@
                         </div>
                         <div hidden>
                             <input type ="text" :value="{{$nextOrderNumber}}" name="orderNumber" id="orderNumber">
+                        </div>
+                        <div hidden>
+                            <input type ="text" :value="canvasJSON" name="canvasJSON" id="canvasJSON">
                         </div>
                         <button type="submit" class="btn btn-primary" style="width:100%; position:relative">Submit Order</button>
                     </form>
@@ -276,6 +279,8 @@
 
 <create-image-component ref="createImageComponent"
                             :createimagetest="0"
+                            :isold="{{old('orderNumber') != null ? 1 : 0}}"
+                            :isediting="0"
 ></create-image-component>
 
 @endsection

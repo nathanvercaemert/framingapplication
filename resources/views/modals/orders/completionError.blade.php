@@ -11,8 +11,8 @@
             <p>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" style="width:100%">Close</button>
             </p>
-            <a :disabled="{{$order->isReported}} == 0" href="" id="reportViewButton" name="reportViewButton" class="btn btn-primary" style="width:100%">View Report</a>
-            <p></p>
+            <!-- <a :disabled="{{$order->isReported}} == 0" href="" id="reportViewButton" name="reportViewButton" class="btn btn-primary" style="width:100%">View Report</a>
+            <p></p> -->
             <div>
                 <ul :hidden="{{$order->isReported}} == 1" class="list-group">
                     <li class="list-group-item list-group-item-secondary">Order cannot be completed before it is reported.</li>

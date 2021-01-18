@@ -56,6 +56,7 @@ import ViewImageMixin from './images/viewImage.js';
 import Axios from "axios";
 
 import { fabric } from 'fabric'
+import { hammer } from 'hammerjs'
 
 let data = {
     isFrame: 1,

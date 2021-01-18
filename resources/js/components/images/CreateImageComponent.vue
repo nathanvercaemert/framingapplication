@@ -25,18 +25,35 @@
             canvas.on('object:modified', function(event) {
                 this.updateCanvasJSON()
             }.bind(this));
-            canvas.on({'touch:gesture': function(e) {
-                if (e.e.touches && e.e.touches.length == 2) {
-                    pausePanning = true;
-                    var point = new fabric.Point(e.self.x, e.self.y);
-                    if (e.self.state == "start") {
-                        zoomStartScale = self.canvas.getZoom();
-                    }
-                    var delta = zoomStartScale * e.self.scale;
-                    self.canvas.zoomToPoint(point, delta);
-                    pausePanning = false;
-                }
-            }})
+
+            let hammer = new Hammer.Manager(canvas.upperCanvasEl);
+            let pinch = new Hammer.Pinch();
+            hammer.add([pinch]);
+
+            hammer.on('pinchin',  (ev) => {
+                let point = new fabric.Point(ev.center.x, ev.center.y);
+                var zoom = canvas.getZoom();
+                zoom *= 0.999 ** (.1 * ev.distance);
+                if (zoom > 10) zoom = 20;
+                if (zoom < 1) zoom = 1;
+                canvas.zoomToPoint(point, zoom);
+
+                // var vpt = canvas.viewportTransform;
+                // vpt[4] += ev.deltaX;
+                // vpt[5] += ev.deltaY;
+            });
+            hammer.on('pinchout',  (ev) => {
+                let point = new fabric.Point(ev.center.x, ev.center.y);
+                var zoom = canvas.getZoom();
+                zoom *= 0.999 ** (-.1 * ev.distance);
+                if (zoom > 10) zoom = 20;
+                if (zoom < 1) zoom = 1;
+                canvas.zoomToPoint(point, zoom);
+
+                // var vpt = canvas.viewportTransform;
+                // vpt[4] += (.001 * ev.deltaX);
+                // vpt[5] += (.001 * ev.deltaY);
+            });
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)

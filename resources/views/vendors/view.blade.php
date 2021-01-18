@@ -12,7 +12,7 @@
                     <h5>Vendor</h5>
                     <p>{{ $vendor->vendor }}</p>
                     <h5>Notes</h5>
-                    <p>{{ $vendor->vendorNotes }}</p>
+                    <p style="white-space:pre-wrap;">{{ $vendor->vendorNotes }}</p>
                     <p>
                         <a href="/vendors/edit/{{$vendor->id}}" class="btn btn-primary text-white" role="button" style="width:100%">Edit Vendor</a>
                     </p>

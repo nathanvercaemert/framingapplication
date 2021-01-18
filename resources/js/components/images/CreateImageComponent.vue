@@ -9,6 +9,7 @@
 
             let canvas = this.__canvas = new fabric.Canvas('c', {
                 isDrawingMode: false,
+                allowTouchScrolling: true,
             });
             if (this.isold || this.isediting) {
                 this.getCanvasJSON()
@@ -24,19 +25,18 @@
             canvas.on('object:modified', function(event) {
                 this.updateCanvasJSON()
             }.bind(this));
-
-        // canvas.on({'touch:gesture': function(e) {
-        //     if (e.e.touches && e.e.touches.length == 2) {
-        //         pausePanning = true;
-        //         var point = new fabric.Point(e.self.x, e.self.y);
-        //         if (e.self.state == "start") {
-        //             zoomStartScale = self.canvas.getZoom();
-        //         }
-        //         var delta = zoomStartScale * e.self.scale;
-        //         self.canvas.zoomToPoint(point, delta);
-        //         pausePanning = false;
-        //     }
-        // }})
+            canvas.on({'touch:gesture': function(e) {
+                if (e.e.touches && e.e.touches.length == 2) {
+                    pausePanning = true;
+                    var point = new fabric.Point(e.self.x, e.self.y);
+                    if (e.self.state == "start") {
+                        zoomStartScale = self.canvas.getZoom();
+                    }
+                    var delta = zoomStartScale * e.self.scale;
+                    self.canvas.zoomToPoint(point, delta);
+                    pausePanning = false;
+                }
+            }})
 
             let drawingButton = document.getElementById('drawingButton')
             drawingButton.addEventListener("click", this.showHideCanvas)

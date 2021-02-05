@@ -16,6 +16,16 @@
             } else {
                 canvas.setHeight(Math.floor(.8 * window.innerHeight))
                 canvas.setWidth(Math.floor($("#drawingButtonRow").width() - 10))
+                var rect = new fabric.Rect({
+                    top : 0,
+                    left : 0,
+                    width : canvas.getWidth() - 2,
+                    height : canvas.getHeight() - 2,
+                    fill : 'transparent',
+                    stroke: 'black',
+                    strokewidth: 1
+                });
+                canvas.add(rect)
             }
             fabric.Object.prototype.transparentCorners = false;
             fabric.Object.prototype.selectable = false;
@@ -29,7 +39,14 @@
             let hammer = new Hammer.Manager(canvas.upperCanvasEl);
             let pinch = new Hammer.Pinch();
             hammer.add([pinch]);
+            var panX = null;
+            var panY = null;
 
+
+            hammer.on('pinchstart',  (ev) => {
+                panX = ev.deltaX
+                panY = ev.deltaY
+            });
             hammer.on('pinchin',  (ev) => {
                 let point = new fabric.Point(ev.center.x, ev.center.y);
                 var zoom = canvas.getZoom();
@@ -37,10 +54,9 @@
                 if (zoom > 10) zoom = 20;
                 if (zoom < 1) zoom = 1;
                 canvas.zoomToPoint(point, zoom);
-
-                // var vpt = canvas.viewportTransform;
-                // vpt[4] += ev.deltaX;
-                // vpt[5] += ev.deltaY;
+                canvas.relativePan({ x: ev.deltaX - panX, y: ev.deltaY - panY })
+                panX = ev.deltaX
+                panY = ev.deltaY
             });
             hammer.on('pinchout',  (ev) => {
                 let point = new fabric.Point(ev.center.x, ev.center.y);
@@ -49,10 +65,9 @@
                 if (zoom > 10) zoom = 20;
                 if (zoom < 1) zoom = 1;
                 canvas.zoomToPoint(point, zoom);
-
-                // var vpt = canvas.viewportTransform;
-                // vpt[4] += (.001 * ev.deltaX);
-                // vpt[5] += (.001 * ev.deltaY);
+                canvas.relativePan({ x: ev.deltaX - panX, y: ev.deltaY - panY })
+                panX = ev.deltaX
+                panY = ev.deltaY
             });
 
             let drawingButton = document.getElementById('drawingButton')

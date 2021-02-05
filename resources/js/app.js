@@ -38,6 +38,9 @@ Vue.component('edit-order-fix-component', require('./components/EditOrderFixComp
 Vue.component('create-image-component', require('./components/images/CreateImageComponent.vue').default);
 Vue.component('view-image-component', require('./components/images/ViewImageComponent.vue').default);
 
+//search component
+Vue.component('search-component', require('./components/SearchComponent.vue').default);
+
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -52,6 +55,8 @@ import PriceUpdateMixin from './price_updates/priceUpdate.js';
 
 import CreateImageMixin from './images/createImage.js';
 import ViewImageMixin from './images/viewImage.js';
+
+import SearchMixin from './search.js';
 
 import Axios from "axios";
 
@@ -76,7 +81,7 @@ let data = {
 };
 
 const app = new Vue({
-    mixins: [ReportMixin, ReportViewMixin, ReportEditMixin, PriceUpdateMixin, CreateImageMixin, ViewImageMixin],
+    mixins: [ReportMixin, ReportViewMixin, ReportEditMixin, PriceUpdateMixin, CreateImageMixin, ViewImageMixin, SearchMixin],
 
     el: '#app',
 

@@ -98,6 +98,13 @@ Route::get('/orders/price', 'OrdersController@price');
 //get the json
 Route::get('/image', 'OrdersController@image');
 
+//list the orders that are being worked on
+Route::get('/orders/working', 'OrdersController@working');
+
+//search stuff
+Route::get('/orders/searchpage', 'OrdersController@searchPage');
+Route::get('/orders/search', 'OrdersController@search');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

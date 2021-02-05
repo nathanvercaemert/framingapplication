@@ -56,6 +56,10 @@
                 response.data.forEach(this.loadOrder)
             },
             loadOrder: function loadOrder(order) {
+                var table = document.getElementById('table');
+                while (table.firstChild) {
+                    table.removeChild(table.lastChild);
+                }
                 let row = document.createElement('tr');
                 let header = document.createElement('th');
                 header.scope = "row";
@@ -76,7 +80,7 @@
                 viewLink.innerHTML += "View";
                 view.appendChild(viewLink);
                 row.appendChild(view);
-                document.getElementById('table').appendChild(row)
+                table.appendChild(row)
             }
         }
     }

@@ -2669,6 +2669,12 @@ __webpack_require__.r(__webpack_exports__);
       response.data.forEach(this.loadOrder);
     },
     loadOrder: function loadOrder(order) {
+      var table = document.getElementById('table');
+
+      while (table.firstChild) {
+        table.removeChild(table.lastChild);
+      }
+
       var row = document.createElement('tr');
       var header = document.createElement('th');
       header.scope = "row";
@@ -2689,7 +2695,7 @@ __webpack_require__.r(__webpack_exports__);
       viewLink.innerHTML += "View";
       view.appendChild(viewLink);
       row.appendChild(view);
-      document.getElementById('table').appendChild(row);
+      table.appendChild(row);
     }
   }
 });

@@ -211,7 +211,7 @@
                                 </div>
                             </div>
                             <div id="cContainer" style="position: relative;">
-                                <canvas id="c" style="border: 5px solid #AAA;" width="100%" height="90vh" @change="updateCanvasJSON"></canvas>
+                                <canvas id="c" style="" width="100%" height="90vh" @change="updateCanvasJSON"></canvas>
                             </div>
                             <div class="form-row" >
                                 <div :hidden="isDrawingMode == 0" class="col float-left">

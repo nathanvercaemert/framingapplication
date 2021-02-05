@@ -16,7 +16,14 @@ class Order extends Model
     public static function userOrders()
     {
         $user = auth()->user()->id;
-        return Order::where('user', $user)->get();
+        return Order::where('user', $user)->get()->reverse();
+    }
+
+    public static function userWorkingOrders()
+    {
+        $user = auth()->user()->id;
+        // The following query doesn't account for whether or not the report is processed
+        return Order::where('user', $user)->where('isCompleted', 0)->where('isReported', 1)->get();
     }
 
     public static function userReportedOrders()
@@ -270,4 +277,7 @@ class Order extends Model
         return $price;
     }
 
+    public static function search($customerEmail, $customerPhoneArea, $customerPhone3, $customerPhone4) {
+        return Order::where('customerEmail', $customerEmail)->orWhere('customerPhoneArea', $customerPhoneArea)->where('customerPhone3', $customerPhone3)->where('customerPhone4', $customerPhone4)->get();
+    }
 }

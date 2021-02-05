@@ -10,6 +10,12 @@
                 </div>
                 <div class="card-body">
                     <p>
+                    <a href="/orders/searchpage" class="btn btn-primary" role="button" style="width:100%">Search Orders</a>
+                    </p>
+                    <p>
+                    <a href="/orders/working" class="btn btn-primary" role="button" style="width:100%">Working Orders</a>
+                    </p>
+                    <p>
                         <a href="/orders/list" class="btn btn-primary" role="button" style="width:100%">List Orders</a>
                     </p>
                     <p class="btn btn-primary text-white" role="button" data-toggle="modal" data-target="#viewOrder" style="width:100%">View Order</p>

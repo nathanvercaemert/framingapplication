@@ -41,11 +41,23 @@ class OrdersController extends Controller
         return view('orders.view')->with($order);
     }
 
+    public function working()
+    {
+        $orders = Order::userWorkingOrders();
+        $orders = array('orders'=>$orders);
+        return view('orders.list')->with($orders);
+    }
+
     public function list()
     {
         $orders = Order::userOrders();
         $orders = array('orders'=>$orders);
         return view('orders.list')->with($orders);
+    }
+
+    public function searchPage()
+    {
+        return view('orders.search');
     }
 
     public function create()
@@ -230,6 +242,10 @@ class OrdersController extends Controller
         $user = auth()->user()->id;
         $fileName = strval($user) . '_' . strval($orderNumber) . '.json';
         return Storage::disk('public')->get($fileName);
+    }
+
+    public function search() {
+        return Order::search(request('customerEmail'), request('customerPhoneArea'), request('customerPhone3'), request('customerPhone4'));
     }
 
 }

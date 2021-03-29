@@ -2561,8 +2561,101 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['reportorders', 'isdaterange', 'daterangeend', 'reportordersnonid', 'reportviewid'],
+  props: ['reportorders', 'isdaterange', 'daterangeend', 'reportordersnonid', 'reportviewid', 'createdate', 'reporttype', 'daterangestart', 'reportnotes', 'reportisprocessed', 'vendors'],
   mounted: function mounted() {
     var isDateRange = this.isdaterange;
     this.$root.viewIsDateRange = isDateRange;
@@ -2580,6 +2673,9 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     document.getElementById('viewDateRangeEnd').innerHTML = endDate;
+    var editButtonLink = "/reports/edit/".concat(this.reportviewid);
+    document.getElementById('editButton').setAttribute('href', editButtonLink);
+    this.loadTable(this.vendors);
   },
   methods: {
     populateReportOrdersListGroup: function populateReportOrdersListGroup() {
@@ -2598,6 +2694,9 @@ __webpack_require__.r(__webpack_exports__);
         orderListNode.appendChild(li);
         li.innerHTML += item;
       });
+    },
+    loadTable: function loadTable(json) {
+      var vendors = JSON.parse(json);
     }
   }
 });
@@ -2655,8 +2754,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: [],
-  mounted: function mounted() {// this.$root.resetSearch()
-  },
+  mounted: function mounted() {},
   methods: {
     searchSubmitFunction: function searchSubmitFunction() {
       var customerEmail = document.getElementById('customerEmail').value;
@@ -2666,15 +2764,18 @@ __webpack_require__.r(__webpack_exports__);
       this.$root.searchSubmitFunction(customerEmail, customerPhoneArea, customerPhone3, customerPhone4);
     },
     searchSubmitFunctionCallback: function searchSubmitFunctionCallback(response) {
+      this.clearOrders();
       response.data.forEach(this.loadOrder);
     },
-    loadOrder: function loadOrder(order) {
+    clearOrders: function clearOrder() {
       var table = document.getElementById('table');
 
       while (table.firstChild) {
         table.removeChild(table.lastChild);
       }
-
+    },
+    loadOrder: function loadOrder(order) {
+      var table = document.getElementById('table');
       var row = document.createElement('tr');
       var header = document.createElement('th');
       header.scope = "row";
@@ -2684,7 +2785,13 @@ __webpack_require__.r(__webpack_exports__);
       created.innerHTML += order.created_at.substring(0, 10);
       row.appendChild(created);
       var completed = document.createElement('td');
-      completed.innerHTML += order.completed_at.substring(0, 10);
+
+      if (order.completed_at != null) {
+        completed.innerHTML += order.completed_at.substring(0, 10);
+      } else {
+        completed.innerHTML += "Incomplete";
+      }
+
       row.appendChild(completed);
       var view = document.createElement('td');
       var viewLink = document.createElement('a');
@@ -2696,6 +2803,7 @@ __webpack_require__.r(__webpack_exports__);
       view.appendChild(viewLink);
       row.appendChild(view);
       table.appendChild(row);
+      console.log('test');
     }
   }
 });
@@ -76291,9 +76399,203 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div")
+  return _c("div", [
+    _c("div", { staticClass: "row" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "col w-50 text-left" }, [
+        _c("a", [_vm._v(_vm._s(_vm.createdate))])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _vm._m(1),
+      _vm._v(" "),
+      _c("div", { staticClass: "col w-50 text-left" }, [
+        _c("a", [_vm._v(_vm._s(_vm.reporttype))])
+      ])
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _vm._m(2),
+      _vm._v(" "),
+      _c("div", { staticClass: "col w-50 text-left" }, [
+        _c(
+          "button",
+          {
+            staticClass: "btn btn-primary",
+            staticStyle: { width: "100%" },
+            attrs: {
+              type: "button",
+              "data-toggle": "modal",
+              "data-target": "#reportOrderListModal"
+            },
+            on: { click: _vm.populateReportOrdersListGroup }
+          },
+          [_vm._v("View Orders")]
+        )
+      ])
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "row",
+        attrs: { hidden: this.$root.viewIsDateRange == 0 }
+      },
+      [
+        _vm._m(3),
+        _vm._v(" "),
+        _c("div", { staticClass: "col w-50 text-left" }, [
+          _c("a", [_vm._v(_vm._s(_vm.daterangestart))])
+        ])
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "row",
+        attrs: { hidden: this.$root.viewIsDateRange == 0 }
+      },
+      [_vm._m(4), _vm._v(" "), _vm._m(5)]
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _vm._m(6),
+      _vm._v(" "),
+      _c("div", { staticClass: "col w-50 text-left" }, [
+        _c("a", [_vm._v(_vm._s(_vm.reportnotes))])
+      ])
+    ]),
+    _vm._v(" "),
+    _vm._m(7),
+    _vm._v(" "),
+    _c("p", [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary text-white",
+          staticStyle: { width: "100%" },
+          attrs: {
+            disabled: _vm.reportisprocessed == 1,
+            type: "button",
+            role: "button",
+            "data-toggle": "modal",
+            "data-target": "#processReport"
+          }
+        },
+        [_vm._v("Process Report")]
+      )
+    ]),
+    _vm._v(" "),
+    _vm._m(8),
+    _vm._v(" "),
+    _c(
+      "a",
+      {
+        staticClass: "btn btn-primary text-white",
+        staticStyle: { width: "100%" },
+        attrs: { href: "/reports", role: "button" }
+      },
+      [_vm._v("Return")]
+    )
+  ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Date Created:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Report Type:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Orders:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Date Range Start:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Date Range End:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-left" }, [
+      _c("a", { attrs: { id: "viewDateRangeEnd", name: "viewDateRangeEnd" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col w-50 text-right" }, [
+      _c("h5", [_vm._v("Notes:")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("table", { staticClass: "table table-sm" }, [
+      _c("thead", [
+        _c("tr", [
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Vendor")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Material")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Identifier")]),
+          _vm._v(" "),
+          _c("th", { attrs: { scope: "col" } }, [_vm._v("Quantity")])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("tbody", { attrs: { name: "reportTable", id: "reportTable" } })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("p", [
+      _c(
+        "a",
+        {
+          staticClass: "btn btn-primary text-white",
+          staticStyle: { width: "100%" },
+          attrs: { role: "button", name: "editButton", id: "editButton" }
+        },
+        [_vm._v("Edit Report")]
+      )
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -90104,9 +90406,9 @@ __webpack_require__.r(__webpack_exports__);
       this.alreadyInOrderList = this.checkAlreadyInOrderList();
 
       if (this.alreadyInOrderList) {
-        this.$refs.reportComponent.updateOrderNumberError();
         this.isInvalid = 0;
         this.isReported = 0;
+        this.$refs.reportComponent.updateOrderNumberError();
       } else {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get('/reports/add', {
           params: {
@@ -90212,18 +90514,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: {// searchCustomerEmail: null,
-    // searchCustomerPhoneArea: null,
-    // searchCustomerPhone3: null,
-    // searchCustomerPhone4: null,
-  },
+  data: {},
   methods: {
-    // resetSearch() {
-    //     this.searchCustomerEmail = null
-    //     this.searchCustomerPhoneArea = null
-    //     this.searchCustomerPhone3 = null
-    //     this.searchCustomerPhone4 = null
-    // },
     searchSubmitFunction: function searchSubmitFunction(customerEmail, customerPhoneArea, customerPhone3, customerPhone4) {
       var _this = this;
 

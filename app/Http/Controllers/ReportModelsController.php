@@ -34,7 +34,7 @@ class ReportModelsController extends Controller
             $report = ReportModel::find($id);
         }
         $viewOrders = implode(",", Order::idsToOrderNumbers($report->reportOrderList));
-        $vendors = ReportModel::reportContents($report->reportOrderList);
+        $vendors = json_encode(ReportModel::reportContents($report->reportOrderList));
         return view('reports.view',['report' => $report, 'viewOrders' => $viewOrders, 'vendors' => $vendors]);
     }
 

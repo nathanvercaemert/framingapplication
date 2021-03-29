@@ -50,9 +50,9 @@ export default {
         addOrder: function() {
             this.alreadyInOrderList = this.checkAlreadyInOrderList()
             if (this.alreadyInOrderList) {
-                this.$refs.reportComponent.updateOrderNumberError()
                 this.isInvalid = 0
                 this.isReported = 0
+                this.$refs.reportComponent.updateOrderNumberError()
             } else {
                 Axios.get('/reports/add', {
                     params: {

@@ -42,7 +42,6 @@
     export default {
         props: [],
         mounted() {
-            // this.$root.resetSearch()
         },
         methods: {
             searchSubmitFunction: function searchSubmitFunction() {
@@ -53,13 +52,17 @@
                 this.$root.searchSubmitFunction(customerEmail, customerPhoneArea, customerPhone3, customerPhone4)
             },
             searchSubmitFunctionCallback: function searchSubmitFunctionCallback(response) {
+                this.clearOrders();
                 response.data.forEach(this.loadOrder)
             },
-            loadOrder: function loadOrder(order) {
+            clearOrders: function clearOrder() {
                 var table = document.getElementById('table');
                 while (table.firstChild) {
                     table.removeChild(table.lastChild);
                 }
+            },
+            loadOrder: function loadOrder(order) {
+                var table = document.getElementById('table');
                 let row = document.createElement('tr');
                 let header = document.createElement('th');
                 header.scope = "row";
@@ -69,7 +72,11 @@
                 created.innerHTML += order.created_at.substring(0,10);
                 row.appendChild(created);
                 let completed = document.createElement('td');
-                completed.innerHTML += order.completed_at.substring(0,10);
+                if (order.completed_at != null) {
+                    completed.innerHTML += order.completed_at.substring(0,10);
+                } else {
+                    completed.innerHTML += "Incomplete";
+                }
                 row.appendChild(completed)
                 let view = document.createElement('td');
                 let viewLink = document.createElement('a');
@@ -81,6 +88,7 @@
                 view.appendChild(viewLink);
                 row.appendChild(view);
                 table.appendChild(row)
+                console.log('test');
             }
         }
     }
